@@ -1,0 +1,213 @@
+The Aphasia Palette
+By Vocadiablo (Yoshitaka Morita)
+
+
+Act I — The Adjective Fog
+
+
+Chapter 1　The Thesaurus on Fire
+
+Episode 01: The Salt in the Mouth
+
+[M1-C1-E01-S001]
+　November rain needles the warehouse pane above Wapping Wall. On my plate lies a thick heel of sourdough, charred along the upper ridge where the coils of the toaster caught it. I press a slab of cold, unsalted butter against the warm crumb. It refuses to melt. I lift the bread to my mouth and bite.
+　Black carbon scrapes the roof of my palate; right behind it comes the dense, tallowy chill of the dairy. My tongue searches the dark cavern behind my teeth for the words that belong to this morning—the modifier for the fermented tang of the starter, the precise epithet for butter that has kept the chill of the larder. Yesterday I had twenty of them lined up like silver spoons in a velvet drawer. Today the velvet is empty. There is only grease, ash, and the loud crunch of my own jawbone echoing into my inner ear. I rub the pad of my right thumb against my index finger. Shhh-shhh. Dry skin against dry skin.
+
+[M1-C1-E01-S002]
+　Across the floorboards stands the oak lectern bearing the second volume of the Oxford English Dictionary, open at the letter A. For twelve years I lived inside those triple columns, trimming dead branches from Latin roots, tracing how an Anglo-Saxon grunt softened into a vowel fit for a vicarage tea.
+　I lean over the tissue-thin India paper and run my fingernail down the entry I drafted seven autumns ago: aphasia, from the Greek ἀφασία, speechlessness. Below it, the historical quotations march in chronological ranks. Yet as I stare at the italicized adjectives—chronic, amnesic, nominal, transient—their serifs begin to loosen like legs shed by drowned spiders. They detach from the nouns they were hired to serve. I shut the heavy buckram cover with both hands. A gust of dry paper-dust puffs against my chin, smelling faintly of vanilla and old glue.
+
+Episode 02: Tape on the Mahogany
+
+[M1-C1-E02-S003]
+　By noon I have bought three rolls of painters' masking tape from the ironmonger on Garnet Street. I sit at the mahogany table, sharpening a Blackwing 602 pencil with a brass wedge sharpener. Cedar shavings curl onto my knuckles; I lift one to my nostrils and inhale the resinous wood before biting the painted barrel between my molars.
+　I tear a strip of tape, press it flat against the ceramic cylinder holding my cold Earl Grey, and print in block capitals: MUG. I cross the rug and label the radiator: IRON. I crouch by the skirting board: OAK. Within an hour the flat looks like a crime scene photographed by an obsessive coroner. Every solid object wears a white paper bandage bearing its proper designation. As long as the graphite binds the syllable to the timber, the furniture cannot slip out of the room while my back is turned.
+
+[M1-C1-E02-S004]
+　A pale strip of tape dangles from my left thumb. I stand before the river window, pencil poised, trying to anchor the quality of the afternoon light as it filters through the Thames mist. Bleak. Wistful. Bilious. Lead-coloured.
+　The graphite tip hovers over the crêpe paper, trembling. Where does one stick the label for bleak? If I press it to the glass, it becomes WINDOW. If I press it to the condensation, it becomes WATER. Adjectives are parasites; they have no skin of their own, no edges to take the glue. I crumple the blank tape into a tight pellet and drop it into my cardigan pocket. Outside, the greyness of the sky is no longer grey; it is simply a vast, nameless pressure leaning against the brick.
+
+
+Chapter 2　The Cello Case
+
+Episode 03: Elena's Dust
+
+[M1-C2-E03-S005]
+　In the alcove beside the chimney breast stands the fibreglass cello case Elena left behind when she took the rest of her life to Hampstead. She bought a new carbon-fibre shell for the orchestra tour that winter; this scarred black cocoon stayed with me, standing upright like a mute sentry.
+　I kneel on the floorboards and draw my forefinger across its curved belly. Grey dust gathers in a felt-like roll under my nail. Beneath the dust, the lacquer still holds a ghost of dark pine rosin. Two years ago, when the first nouns began to slip through the sieve of my left temporal lobe—when I called her music stand a "metal stork" and could not summon the word arpeggio—fear made me cruel. "Your cello is nothing but horsehair scraping dried gut at four hundred and forty hertz," I told her, sneering over my teacup so she would not see my hand shaking. Better that she hate me for a heartless pedant than stay to watch the lexicographer drool over his alphabet. Now I try to summon the exact shade of her eyes when the front door latched behind her, and find only a blurred negative.
+
+[M1-C2-E03-S006]
+　I do not open the lid. Inside lies only crushed blue plush and the indentation of a bridge that is no longer there. Instead, I hook my thumbnail beneath the lower brass latch and flick it upward.
+　Clack.
+　A sharp, metallic report rings out, followed by a low, hollow hum from the empty cavity—roughly a low G, vibrating through the soles of my socks. The sound has no grammar. It requires no modifier. I flick the latch a second time, pressing my ear against the cold fibreglass until the ringing dies into the groan of the river barges outside.
+
+Episode 04: The Niece with the Code
+
+[M1-C2-E04-S007]
+　At four o'clock the buzzer rasps. Mayuki climbs the three flights from the street, bringing the cold smell of Shoreditch rain and a brown paper bag of dark purple figs. While the kettle builds to a rumble, she sets her silver laptop among my white tape labels, her eyes darting from KETTLE to TAP to SPOON without a word of pity.
+　I take a pinch of dry Earl Grey leaves from the tin and chew them raw between my back teeth. The bitter bergamot oil stings my gums, cutting through the cotton wool in my head.
+　"When I was nine, Uncle Julian," Mayuki says, opening her screen, "I cried because I couldn't tell the difference between shadow and shade. You drew a tree on a napkin and showed me how words hold the light at different angles." She turns the monitor towards me. Across a dark canvas, lines of pale serif text float inside nested brackets of code. "The neurologist says the semantic grid is unravelling from the edges inward. So don't fight the unravelling on paper. Give the words to me. Let me build a web page that decays at the exact speed of your memory."
+
+[M1-C2-E04-S008]
+　Warm exhaust from her laptop fan brushes my wrist. I look at the glowing Document Object Model in her inspector pane: spans and classes nested like Russian dolls, each word wrapped in its grammatical tag.
+　I reach out with two fingers and tap her black plastic keys. C-A-L-I-G-O. Latin for mist, darkness, dizziness. Then: L-A-C-U-N-A. A gap in a manuscript.
+　"A lexicon in reverse," I murmur, rubbing my thumb against my forefinger. Shhh-shhh. "Every time someone scrolls down the page, the adjectives bleed into the background. Every time they touch a noun, it drops into the cellar."
+　Mayuki's fingers fly over the trackpad, binding an event listener to my sentence. "A monument made of sand," she whispers. "We'll let the browser remember the ghosts."
+
+
+Act II — The Fracture of Nouns
+
+
+Chapter 3　The Kitchen of Nameless Things
+
+Episode 05: The Pear That Was Not a Pear
+
+[M2-C3-E05-S009]
+　February freezes the grease in the frying pan. On the kitchen counter sits a porcelain bowl filled with the fruit Mayuki poached in white wine and cinnamon bark last night. I lift one by its shrivelled stem. Dark syrup drips onto my knuckle, sticky and cold.
+　I know where this object grows—on twisted branches against warm Mediterranean walls. I know you split its purple skin to find a wet crimson hollow packed with a thousand tiny seeds. Yet when I reach into the drawer of my skull for its name, my fingers close on air.
+　"Pear," I say aloud to the empty kitchen. No. A pear is pale, gritty, shaped like a teardrop. This is smaller. Softer. "Plum." No. A plum has a single stone at the centre. "Fruit," I mutter, and even that word feels loose, like an overcoat three sizes too big. Finally: "This sweet thing."
+　I push the whole dark globe into my mouth. The skin gives way; the cinnamon burns the tip of my tongue; the seeds crackle between my molars like fine river gravel. Without its name standing between us like a museum rope, the fruit is almost unbearably intimate.
+
+[M2-C3-E05-S010]
+　Mayuki sits opposite me on a Saturday morning, unpacking a canvas tote bag onto the mahog—onto the dark wood. She sets down four items in a neat row: a perforated metal bowl for draining boiled food, a small mesh tool for catching tea leaves, a corkscrew, and a lemon.
+　"Take your time, Julian," she says, her voice deliberately flat, her fingers resting on her keyboard.
+　I point at the yellow oval. "Lemon," I say, triumphant.
+　I move my finger to the metal bowl with the punched holes. In my mind I see boiling water pouring through it, steam rising into my glasses. I mime shaking two handles. "The... the water-sieve. The bowl with the holes."
+　Mayuki does not supply colander. She knows how much I despise the charity of a rescued syllable. Instead, she taps three keys. On her screen, `<span class="noun" data-word="colander">vessel</span>` flickers once and collapses into a grey rectangle: `[____]`. My throat constricts; I swallow dry saliva and point to the next object in silence.
+
+Episode 06: Bread and Knife
+
+[M2-C3-E06-S011]
+　The loaf on the wooden board is two days old, its crust hardened into armour. I pull open the drawer and wrap my fist around the wooden handle of the long metal blade with the scalloped teeth.
+　As I lift it into the pale light from the window, the domestic word bread-knife evaporates. What remains in my right hand is no longer a kitchen utensil. Stripped of its tame household category, it reveals what it actually is: fourteen inches of cold Sheffield steel ground into a row of Ripper fangs. The weight of the tang pulls at my wrist. I stare at the polished flat of the steel, watching my own distorted eye stare back. When the dictionary dies, the world does not become vague; it becomes ferocious. Every object bristles with raw matter.
+
+[M2-C3-E06-S012]
+　I set the serrated edge against the loaf and saw downward. The blade skids off the hard flour-dusted dome and kisses the knuckle of my left thumb.
+　Not deep—just a parting of the epidermis. A bead of bright carmine wells up from the crease, round and heavy as a drop of mercury.
+　"Red," I whisper. The syllable holds.
+　A sharp sting climbs the nerve from thumb to elbow.
+　"Hurt," I say. That word holds too. I bring my thumb to my lips and taste the hot copper of my own salt. Pain sits at the bottom of the well where the water never freezes.
+
+
+Chapter 4　The Rain Without a Sky
+
+Episode 07: River Thames in Grey
+
+[M2-C4-E07-S013]
+　Low tide at Wapping. Most of the tape labels have curled and fallen from the furniture like dead autumn leaves; I no longer bother to press them back because the block capitals written on them—LINTEL, RADIATOR, SKIRTING—now look like Cyrillic or runes scratched by a stranger.
+　I stand at the tall casement and look down. The word Thames is gone. The word river is gone. What lies below the warehouse wall is a mile-wide trough of wet, breathing grease. Long banks of black silt gleam like the backs of whales surfaced in the drizzle, smelling of rotted kelp, diesel oil, and centuries of rusted iron. The water does not flow; it heaves, a colossal muscle of grey mud pulling back towards the sea.
+
+[M2-C4-E07-S014]
+　Along the narrow cobbles of the high street on the landward side, figures move through the five-o'clock rain. Six months ago I would have read them like a paragraph: solicitors hurrying toward the Overground, a courier on a bicycle, a woman walking a brindle terrier.
+　Now the nouns that sorted them into castes and errands have washed away. I see two-legged warm bodies beneath bobbing domes of taut black cloth. I see boots splashing silver arcs from puddles. Without their titles, they look astonishingly fragile—soft creatures carrying little bags of food through the falling water, leaning forward against the wind so as not to fall.
+
+Episode 08: The Lost Subjunctive
+
+[M2-C4-E08-S015]
+　On my desk lies a buff folder of offprints: my monograph on the subjunctive mood in Middle English lyrics, published by the Philological Society in 2016. I open to page fourteen.
+　"Were the speaker to posit a counterfactual desire, the inflectional ending would..."
+　My eyes slide off the sentence as if the ink were greased. If. Were. Would have been. Whomsoever. The hinges of grammar—the tiny pins that allow a human mind to build a bridge into yesterday or tomorrow, or into a world that never happened—have rusted through. A sentence can no longer turn a corner. There is no if. There is only what sits on the table in front of my nose.
+
+[M2-C4-E08-S016]
+　From the bottom drawer I pull the blue airmail pad containing eleven unsent drafts to Elena. Every page begins with a conditional clause: If I had told you the diagnosis in October... Had I not mocked your Brahms... Would that we might...
+　I cannot parse the machinery of my own remorse. Regret requires a parallel universe, a grammatical tense in which the door did not close. When you lose the subjunctive, you lose the ability to haunt yourself.
+　I take the eleven sheets together, grip the top edge with both hands, and tear them down the middle. Then across. Rrrr-ip. The blue paper snows into the wastebasket. I am locked inside the present indicative, and the room is unexpectedly quiet.
+
+
+Act III — The Bare Verbs & The Void
+
+
+Chapter 5　The Hand on the Glass
+
+Episode 09: Touch, Cold, Hold
+
+[M3-C5-E09-S017]
+　April.
+　No month. No name.
+　Stand.
+　Before the tall clear wall.
+　Lift the hand. Press the flat of the skin against the hard cold.
+　Cold bites the palm. Breath goes out of the mouth and makes a white cloud on the clear wall.
+　Move a finger through the white cloud. Make a line. Through the line, the bright wet outside shines.
+　Press. Stay. Breathe.
+
+[M3-C5-E09-S018]
+　The door opens. Footsteps on the wood.
+　A person comes in. Dark hair. Small hands. Smells of rain and bitter leaf-water.
+　No name for her. Not niece. Not Mayuki. Just Her. Just Warm.
+　She stands close. She looks at my chest. The wool coat on my shoulders is crooked—bottom button in the top hole.
+　Her fingers come up. She undoes the round bone disc, slips it through the right slit, pats the wool flat over my collarbone.
+　Her hand stays on my shoulder for three beats.
+　Warm. Hold. Safe.
+
+Episode 10: The Code That Breaks
+
+[M3-C5-E10-S019]
+　Sit side by side.
+　The flat light-box is open on the knees.
+　Inside the dark square, white marks drift like snow in water.
+　She touches the flat glass. One mark goes dark. Another mark turns to mist.
+　At the top corner, numbers count down: 4%... 3%... 2%...
+　All the heavy things I carried in my head for forty years—they are in the box now. Floating. Falling. Turning into quiet.
+　She looks at me. Water shines on her lower lashes.
+　I tap the edge of the light-box with my knuckle and nod once. Good. Let them go.
+
+[M3-C5-E10-S020]
+　Reach into the pocket of the wool coat.
+　Fingers find the short stick of wood. Bitten all along the sides. Smells of forest and black stone.
+　Pull it out. No more marks to make.
+　Take her small hand. Turn the palm up.
+　Lay the bitten wood across her lines. Close her fingers over it.
+　Keep.
+
+
+Chapter 6　The Light Itself
+
+Episode 11: The Last Hundred Letters
+
+[M3-C6-E11-S021]
+　Turn toward the tall clear wall.
+　The grey outside breaks open.
+　Yellow pours in.
+　It falls across the rough red wall. It falls across the wood floor. It climbs my knees, my chest, my chin.
+　Before, a word stood in front of this. Sun. Afternoon. April. Gold. The word was a thin coin held over the eye.
+　Now the coin is gone.
+　The yellow heat hits the naked eye with nothing between. Every grain of dust in the air burns like a star. The rough wall blazes.
+　Close the eyes. Red-gold through the lids.
+　Open.
+
+[M3-C6-E11-S022]
+　Look.
+　Warm.
+　Shine.
+　Breathe.
+　In.
+　Out.
+　Stay.
+　Be.
+
+Episode 12: White Screen
+
+[M3-C6-E12-S023]
+　. . .
+　. .
+　.
+　
+
+[M3-C6-E12-S024]
+/* --------------------------------------------------------------------------
+ * ARCHIVAL COMMIT LOG — f8a92c4
+ * Author: Mayuki Rhys-Tanaka <m.rhys-tanaka@shoreditch-typo.uk>
+ * Date:   14 April 2027, 17:42:09 BST
+ * Status: Lexicon Depleted (0.0% Active Nouns / Verbs Dissolved)
+ *
+ * Note for the British Library Web Archive:
+ * Julian stopped naming the world on a Tuesday.
+ * We sat by the window in Wapping for two hours while the tide went out,
+ * eating poached figs with a spoon because he no longer knew what a fork was for.
+ * He laughed when the syrup ran down his wrist. I had not heard him laugh
+ * since I was a child.
+ *
+ * He stopped naming the world on a Tuesday.
+ * The world did not mind.
+ * -------------------------------------------------------------------------- */

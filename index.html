@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Aphasia Palette — Interactive Digital Narrative by Vocadiablo</title>
+  <meta name="description" content="A born-digital interactive narrative exploring semantic variant Primary Progressive Aphasia (svPPA), lexicography, and the liberation of matter from language.">
+  <meta name="author" content="Vocadiablo (Yoshitaka Morita)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@300;400&family=Shippori+Mincho:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0d10;
+      --text: #dce1ea;
+      --text-muted: #7c8596;
+      --faded: #4b5262;
+      --ghost: rgba(155, 182, 220, 0.92);
+      --accent: #c49e7e;
+      --accent-crimson: #b54848;
+      --blank-bg: rgba(45, 52, 66, 0.72);
+      --card-bg: rgba(18, 22, 28, 0.85);
+      --border-subtle: rgba(255, 255, 255, 0.07);
+    }
+
+    body.dawn-mode {
+      --bg: #f4efe6;
+      --text: #1c1915;
+      --text-muted: #6e665c;
+      --faded: #8c8275;
+      --ghost: rgba(90, 72, 55, 0.9);
+      --accent: #9c6b3b;
+      --blank-bg: rgba(210, 198, 180, 0.65);
+      --card-bg: rgba(244, 239, 230, 0.92);
+      --border-subtle: rgba(28, 25, 21, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.42rem;
+      line-height: 2.05;
+      letter-spacing: 0.015em;
+      overflow-x: hidden;
+      transition: background-color 1.8s cubic-bezier(0.22, 1, 0.36, 1), color 1.5s ease;
+    }
+
+    /* Ambient Background Canvas (Rain / Dust / Light Particles) */
+    #ambient-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.55;
+    }
+
+    /* Top HUD */
+    .hud {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      letter-spacing: 0.07em;
+      z-index: 200;
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--card-bg);
+      backdrop-filter: blur(8px);
+      transition: background 1.2s ease, border-color 1.2s ease;
+    }
+
+    .hud-left, .hud-center, .hud-right {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .hud-title {
+      color: var(--accent);
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .hud-btn {
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .hud-btn:hover, .hud-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(196, 158, 126, 0.08);
+    }
+
+    /* Navigation Drawer */
+    .drawer {
+      position: fixed;
+      top: 3.4rem;
+      left: 0;
+      width: 340px;
+      max-height: calc(100vh - 3.4rem);
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border-right: 1px solid var(--border-subtle);
+      z-index: 190;
+      transform: translateX(-105%);
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      overflow-y: auto;
+      padding: 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+    }
+
+    .drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer h3 {
+      color: var(--accent);
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .drawer-act {
+      margin-bottom: 1.2rem;
+    }
+
+    .drawer-act-title {
+      color: var(--text);
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .drawer-link {
+      display: block;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 0.28rem 0.5rem;
+      border-radius: 3px;
+      transition: all 0.2s ease;
+      line-height: 1.4;
+      margin-bottom: 0.15rem;
+    }
+
+    .drawer-link:hover {
+      color: var(--accent);
+      background: rgba(196, 158, 126, 0.08);
+    }
+
+    /* Lexicon Graveyard Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 7, 9, 0.82);
+      backdrop-filter: blur(6px);
+      z-index: 300;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #12151b;
+      color: #dce1ea;
+      border: 1px solid rgba(196, 158, 126, 0.3);
+      max-width: 680px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 2.2rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      line-height: 1.8;
+      border-radius: 4px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .graveyard-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .graveyard-item {
+      padding: 0.6rem;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .graveyard-word {
+      color: #c49e7e;
+      text-decoration: line-through;
+      display: block;
+      font-size: 0.85rem;
+    }
+
+    .graveyard-etym {
+      color: #7c8596;
+      font-size: 0.68rem;
+    }
+
+    /* Main Container */
+    .container {
+      position: relative;
+      z-index: 10;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 15vh 2rem 28vh 2rem;
+    }
+
+    /* Hero Title Header */
+    .hero {
+      min-height: 72vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 12vh;
+      padding-bottom: 4rem;
+    }
+
+    .hero-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero h1 {
+      font-size: 3.6rem;
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .hero-sub {
+      font-size: 1.25rem;
+      font-style: italic;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-guide {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.76rem;
+      line-height: 1.9;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.025);
+      border-left: 2px solid var(--accent);
+      padding: 1.2rem 1.5rem;
+      max-width: 620px;
+    }
+
+    /* Structural Headings */
+    .act-banner {
+      margin: 18vh 0 8vh 0;
+      padding: 2rem 0;
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .act-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .act-name {
+      font-size: 2.2rem;
+      font-weight: 300;
+      letter-spacing: 0.03em;
+    }
+
+    .act-desc {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 0.6rem;
+    }
+
+    .chapter-head {
+      margin: 10vh 0 4vh 0;
+      font-size: 1.65rem;
+      font-weight: 400;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+    }
+
+    .episode-head {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin: 6vh 0 2.5vh 0;
+    }
+
+    .scene-block {
+      margin-bottom: 6.5vh;
+      position: relative;
+      padding-left: 1.2rem;
+      border-left: 1px solid transparent;
+      transition: border-color 0.4s ease;
+    }
+
+    .scene-block:hover {
+      border-left-color: var(--border-subtle);
+    }
+
+    .scene-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--faded);
+      letter-spacing: 0.1em;
+      display: block;
+      margin-bottom: 0.6rem;
+      user-select: none;
+    }
+
+    .paragraph {
+      margin-bottom: 1.6rem;
+      text-align: justify;
+    }
+
+    /* Japanese Bilingual Subtitle Block */
+    .jp-sub {
+      display: none;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 0.96rem;
+      line-height: 1.95;
+      color: var(--text-muted);
+      background: rgba(196, 158, 126, 0.04);
+      border-left: 2px solid rgba(196, 158, 126, 0.3);
+      padding: 1rem 1.25rem;
+      margin-top: 1rem;
+      margin-bottom: 2rem;
+      border-radius: 0 3px 3px 0;
+    }
+
+    body.show-jp .jp-sub {
+      display: block;
+    }
+
+    /* Word Classes: Adjectives (.adj) */
+    .adj {
+      transition: opacity 0.9s ease, filter 0.9s ease, color 0.7s ease;
+      display: inline;
+      border-bottom: 1px dashed rgba(196, 158, 126, 0.2);
+    }
+
+    .adj.evaporated {
+      opacity: 0.08 !important;
+      filter: blur(3.5px) !important;
+      border-bottom-color: transparent;
+    }
+
+    .adj:hover {
+      opacity: 0.95 !important;
+      filter: blur(0px) !important;
+      color: var(--accent);
+    }
+
+    /* Word Classes: Nouns (.noun) — 3-Stage svPPA Decay */
+    .noun {
+      cursor: pointer;
+      position: relative;
+      display: inline-block;
+      transition: all 0.35s ease;
+      border-bottom: 1px dotted rgba(220, 225, 234, 0.38);
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+
+    .noun:hover {
+      color: #ffffff;
+      background: rgba(196, 158, 126, 0.15);
+      border-bottom-color: var(--accent);
+    }
+
+    /* Stage 1: Superordinate / Generic Fallback */
+    .noun.stage-1 {
+      color: var(--accent);
+      font-style: italic;
+      border-bottom: 1px dashed var(--accent);
+    }
+
+    /* Stage 2: Amputated Slot [____] with Ghost Etymology on Hover */
+    .noun.amputated {
+      color: transparent !important;
+      background: var(--blank-bg);
+      border-radius: 2px;
+      padding: 0 6px;
+      margin: 0 2px;
+      user-select: none;
+      border-bottom: none;
+      min-width: 3.2em;
+      text-align: center;
+    }
+
+    .noun.amputated::before {
+      content: "[____]";
+      color: var(--faded);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .noun.amputated::after {
+      content: attr(data-word) " (" attr(data-etym) ")";
+      position: absolute;
+      left: 50%;
+      bottom: 125%;
+      transform: translateX(-50%);
+      font-size: 0.74rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--ghost);
+      background: rgba(11, 13, 16, 0.95);
+      border: 1px solid rgba(196, 158, 126, 0.4);
+      padding: 0.25rem 0.65rem;
+      border-radius: 3px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, bottom 0.25s ease;
+      white-space: nowrap;
+      z-index: 150;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    }
+
+    .noun.amputated:hover::after {
+      opacity: 1;
+      bottom: 140%;
+    }
+
+    /* Word Classes: Verbs (.verb) */
+    .verb {
+      font-weight: 600;
+      transition: all 0.8s ease;
+    }
+
+    .verb-pulse {
+      display: inline-block;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      animation: breathePulse 4s infinite ease-in-out;
+    }
+
+    @keyframes breathePulse {
+      0%, 100% { opacity: 0.85; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.03); }
+    }
+
+    /* Scene-Specific Interactive Widgets */
+    .interactive-widget {
+      margin: 2rem 0;
+      padding: 1.4rem 1.6rem;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+    }
+
+    .widget-title {
+      color: var(--accent);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .tape-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .tape-strip {
+      background: #e8e4d9;
+      color: #1a1a1a;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      font-size: 0.78rem;
+      padding: 0.35rem 0.85rem;
+      letter-spacing: 0.12em;
+      transform: rotate(-1.5deg);
+      cursor: pointer;
+      box-shadow: 1px 2px 5px rgba(0,0,0,0.4);
+      transition: all 0.35s ease;
+      user-select: none;
+    }
+
+    .tape-strip:nth-child(even) {
+      transform: rotate(1.8deg);
+    }
+
+    .tape-strip.peeled {
+      opacity: 0.22;
+      transform: translateY(14px) rotate(12deg);
+      text-decoration: line-through;
+    }
+
+    .action-btn {
+      background: rgba(196, 158, 126, 0.12);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.76rem;
+      padding: 0.55rem 1.2rem;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      letter-spacing: 0.08em;
+    }
+
+    .action-btn:hover {
+      background: var(--accent);
+      color: #0b0d10;
+    }
+
+    /* Condensation Window Canvas (S017) */
+    .glass-canvas-wrap {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 1.5rem 0;
+      background: linear-gradient(135deg, #2a3546 0%, #c9a77c 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .glass-under-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      letter-spacing: 0.25em;
+      color: #ffffff;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+      user-select: none;
+      pointer-events: none;
+    }
+
+    #frost-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      cursor: crosshair;
+    }
+
+    /* Subjunctive Shredder (S016) */
+    .airmail-sheet {
+      background: rgba(45, 75, 110, 0.22);
+      border: 1px solid rgba(120, 165, 220, 0.25);
+      padding: 1.2rem;
+      font-style: italic;
+      color: #a9c5e8;
+      margin-bottom: 1rem;
+      transition: all 0.6s ease;
+    }
+
+    .airmail-sheet.torn {
+      transform: scale(0.92) translateY(15px);
+      opacity: 0;
+      filter: blur(6px);
+      height: 0;
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+      border: none;
+    }
+
+    /* Epilogue Commit Log (S024) */
+    .commit-log {
+      margin-top: 16vh;
+      padding: 2.5rem;
+      background: #14171d;
+      color: #d0d7e2;
+      border-left: 3px solid var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.95;
+      border-radius: 0 4px 4px 0;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+    }
+
+    .commit-meta {
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Bottom Status Hint */
+    .bottom-bar {
+      position: fixed;
+      bottom: 1.4rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      padding: 0.45rem 1.2rem;
+      border-radius: 20px;
+      z-index: 180;
+      backdrop-filter: blur(6px);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    @media (max-width: 720px) {
+      body { font-size: 1.2rem; }
+      .hero h1 { font-size: 2.4rem; }
+      .hud { padding: 0.75rem 1rem; flex-wrap: wrap; gap: 0.5rem; }
+      .hud-center { display: none; }
+      .container { padding: 14vh 1.2rem 22vh 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="ambient-canvas"></canvas>
+
+  <!-- Top HUD -->
+  <header class="hud">
+    <div class="hud-left">
+      <button class="hud-btn" id="drawerToggle" title="Open Scene Index">☰ Scenes (24)</button>
+      <span class="hud-title">The Aphasia Palette</span>
+    </div>
+    <div class="hud-center">
+      <span id="hud-act">Act I: The Adjective Fog</span>
+      <span>|</span>
+      <span id="scroll-stat">Progression: 0%</span>
+      <span>|</span>
+      <span id="vocab-stat">Intact Nouns: 100%</span>
+    </div>
+    <div class="hud-right">
+      <button class="hud-btn" id="jpToggle" title="Toggle Japanese Translation">JP 対訳: OFF</button>
+      <button class="hud-btn" id="graveyardBtn" title="View Forgotten Words">Lost Words (0)</button>
+      <button class="hud-btn" id="audioToggle" title="Toggle Procedural Soundscape">Audio: OFF</button>
+    </div>
+  </header>
+
+  <!-- Archival Scene Navigation Drawer -->
+  <nav class="drawer" id="sceneDrawer">
+    <h3>Archival Structure (3 Acts / 24 Scenes)</h3>
+    <div class="drawer-act">
+      <span class="drawer-act-title">Act I — The Adjective Fog</span>
+      <a class="drawer-link" href="#s001">M1-C1-E01-S001: Charred Sourdough</a>
+      <a class="drawer-link" href="#s002">M1-C1-E01-S002: The OED Lectern</a>
+      <a class="drawer-link" href="#s003">M1-C1-E02-S003: Masking Tape Labels</a>
+      <a class="drawer-link" href="#s004">M1-C1-E02-S004: Unstickable Qualifiers</a>
+      <a class="drawer-link" href="#s005">M1-C2-E03-S005: Elena's Cello Case</a>
+      <a class="drawer-link" href="#s006">M1-C2-E03-S006: The Brass Latch (G2)</a>
+      <a class="drawer-link" href="#s007">M1-C2-E04-S007: Mayuki & Earl Grey</a>
+      <a class="drawer-link" href="#s008">M1-C2-E04-S008: DOM in Reverse</a>
+    </div>
+    <div class="drawer-act">
+      <span class="drawer-act-title">Act II — The Fracture of Nouns</span>
+      <a class="drawer-link" href="#s009">M2-C3-E05-S009: The Nameless Fig</a>
+      <a class="drawer-link" href="#s010">M2-C3-E05-S010: Naming Therapy</a>
+      <a class="drawer-link" href="#s011">M2-C3-E06-S011: Feral Sheffield Steel</a>
+      <a class="drawer-link" href="#s012">M2-C3-E06-S012: Red, Hurt, Copper</a>
+      <a class="drawer-link" href="#s013">M2-C4-E07-S013: Trench of Breathing Mud</a>
+      <a class="drawer-link" href="#s014">M2-C4-E07-S014: Domes of Black Cloth</a>
+      <a class="drawer-link" href="#s015">M2-C4-E08-S015: Rusted Hinges of "If"</a>
+      <a class="drawer-link" href="#s016">M2-C4-E08-S016: Tearing the Blue Airmail</a>
+    </div>
+    <div class="drawer-act">
+      <span class="drawer-act-title">Act III — The Bare Verbs & The Void</span>
+      <a class="drawer-link" href="#s017">M3-C5-E09-S017: Breath on Cold Glass</a>
+      <a class="drawer-link" href="#s018">M3-C5-E09-S018: The Crooked Button</a>
+      <a class="drawer-link" href="#s019">M3-C5-E10-S019: Ash in the Light-Box</a>
+      <a class="drawer-link" href="#s020">M3-C5-E10-S020: Passing the Bitten Cedar</a>
+      <a class="drawer-link" href="#s021">M3-C6-E11-S021: The Coin Falls Away</a>
+      <a class="drawer-link" href="#s022">M3-C6-E11-S022: Bare Verbs</a>
+      <a class="drawer-link" href="#s023">M3-C6-E12-S023: White Silence</a>
+      <a class="drawer-link" href="#s024">M3-C6-E12-S024: Archival Commit Log</a>
+    </div>
+  </nav>
+
+  <!-- Lexicon Graveyard Modal -->
+  <div class="modal-overlay" id="graveyardModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span style="color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em;">Lexicon Graveyard — Surrendered Nouns</span>
+        <button class="hud-btn" id="closeModalBtn">Close ✕</button>
+      </div>
+      <p style="color: #8c96a8; font-size: 0.74rem;">
+        Every noun surrendered by Julian Rhys is archived below with its historical etymology. Click any dotted noun in the manuscript to witness its semantic decay.
+      </p>
+      <div class="graveyard-list" id="graveyardGrid"></div>
+    </div>
+  </div>
+
+  <div class="bottom-bar" id="hintBar">
+    Scroll to erode adjectives · Click dotted nouns to trigger semantic decay · Hover `[____]` to recall etymology
+  </div>
+
+  <!-- Main Manuscript -->
+  <main class="container">
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <span class="hero-eyebrow">New Media Writing Prize · Born-Digital Narrative</span>
+      <h1>The Aphasia Palette</h1>
+      <div class="hero-sub">By Vocadiablo (Yoshitaka Morita)</div>
+      <div class="hero-guide">
+        <strong>INTERACTIVE PROTOCOL:</strong><br>
+        1. <strong>Scroll</strong> to advance through Julian Rhys's final year in Wapping. As you descend, <em>adjectives and qualifiers</em> blur and evaporate from the DOM.<br>
+        2. <strong>Click any underlined noun</strong> to experience two-stage semantic dementia (svPPA): specific nouns first regress into generic hypernyms (<em>sourdough → bread</em>), and upon a second click collapse into silent slots (<code>[____]</code>).<br>
+        3. <strong>Hover over <code>[____]</code></strong> to glimpse the ghost of the lost word and its Latin/Old English root.<br>
+        4. Toggle <strong>Audio: ON</strong> in the top bar for real-time Web Audio synthesis.
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- ACT I: THE ADJECTIVE FOG                                          -->
+    <!-- ================================================================= -->
+    <div class="act-banner" id="act1">
+      <span class="act-label">Act I · Wapping, November</span>
+      <h2 class="act-name">The Adjective Fog</h2>
+      <p class="act-desc">Phase 1 Semantic Erosion: Qualifiers detach from their referents and dissolve on scroll.</p>
+    </div>
+
+    <h3 class="chapter-head">Chapter 1　The Thesaurus on Fire</h3>
+    <div class="episode-head">Episode 01: The Salt in the Mouth</div>
+
+    <!-- S001 -->
+    <article class="scene-block" id="s001">
+      <span class="scene-id">[M1-C1-E01-S001]</span>
+      <p class="paragraph">
+        November rain <span class="verb">needles</span> the warehouse <span class="noun" data-word="pane" data-generic="glass" data-etym="Lat. pannus, piece of cloth">pane</span> above Wapping Wall. On my plate <span class="verb">lies</span> the heel of a <span class="noun" data-word="sourdough" data-generic="bread" data-etym="OE sūr + dāg, fermented dough">sourdough</span> loaf, <span class="adj">charred</span> along its <span class="adj">upper</span> ridge where the <span class="adj">red</span> coils of the <span class="noun" data-word="toaster" data-generic="heater" data-etym="Lat. torrēre, to parch">toaster</span> <span class="verb">caught</span> it. I <span class="verb">press</span> a <span class="adj">thick</span> slab of <span class="adj">unsalted</span> <span class="noun" data-word="butter" data-generic="fat" data-etym="Gr. boutyron, cow-cheese">butter</span> against the <span class="adj">warm</span> crumb. The fat <span class="verb">stays</span> <span class="adj">stubbornly solid</span>. I <span class="verb">lift</span> the crust to my mouth and <span class="verb">bite</span>.
+      </p>
+      <p class="paragraph">
+        <span class="adj">Black</span> carbon <span class="verb">scrapes</span> my <span class="noun" data-word="palate" data-generic="mouth" data-etym="Lat. palātum, roof of the mouth">palate</span>; right behind it <span class="verb">comes</span> the <span class="adj">dense, tallowy</span> chill of the dairy. My tongue <span class="verb">searches</span> the <span class="adj">dark</span> cavern behind my teeth for the words that <span class="verb">belong</span> to this morning—the <span class="noun" data-word="modifier" data-generic="word" data-etym="Lat. modificāre, to measure">modifier</span> for the <span class="adj">sour</span> tang of <span class="adj">fermented</span> dough, the <span class="adj">exact</span> <span class="noun" data-word="epithet" data-generic="label" data-etym="Gr. epitheton, added word">epithet</span> for butter that has <span class="verb">kept</span> the chill of the <span class="noun" data-word="larder" data-generic="room" data-etym="OF lardier, bacon-store">larder</span>. Yesterday they <span class="verb">waited</span> in <span class="adj">neat</span> rows like <span class="adj">silver</span> spoons in a <span class="adj">velvet</span> drawer. Today the velvet is <span class="adj">bare</span>. Grease <span class="verb">coats</span> my gums; ash <span class="verb">settles</span> on my tongue; the crunch of my own <span class="noun" data-word="jawbone" data-generic="bone" data-etym="ME chowe + bān">jawbone</span> <span class="verb">echoes</span> inside my skull. Under the table, I <span class="verb">rub</span> the pad of my right thumb against my index finger. <em>Shhh-shhh.</em> <span class="adj">Dry</span> skin <span class="verb">rasping</span> against <span class="adj">dry</span> skin.
+      </p>
+      <div class="jp-sub">
+        十一月の雨が、ワッピング・ウォールの倉庫窓を針のように刺している。皿の上にはサワードウの端切れがひとつ、トースターの赤い電熱線に引っかかった上縁だけ黒く焦げて乗っている。温かいパンの身に、厚く切った無塩バターを押しつける。脂肪の塊は頑なに溶けようとしない。私はその耳を持ち上げ、口に運んで噛みしめる。<br>
+        黒い炭が上顎を引っ掻き、すぐその後から、獣脂じみた乳製品の重たい冷気が押し寄せる。私の舌は歯の裏の暗い洞窟を探り、この朝に属するはずの言葉を探す——発酵した生地の酸味を飾る修飾語、食料庫の冷たさを保ったままのバターに与えるべき的確な形容辞を。昨日まで、それらはビロード張りの引き出しに並んだ銀の匙のように整然と控えていた。今日、ビロードは剥き出しだ。脂が歯茎に張りつき、灰が舌に沈殿し、自分の顎の骨が鳴らす咀嚼音だけが頭蓋の内側に大きく反響する。テーブルの下で、私は右手の親指の腹を人差し指に擦り合わせる。シュッ、シュッ。乾いた皮膚が乾いた皮膚を擦る音。
+      </div>
+    </article>
+
+    <!-- S002 -->
+    <article class="scene-block" id="s002">
+      <span class="scene-id">[M1-C1-E01-S002]</span>
+      <p class="paragraph">
+        Across the floorboards <span class="verb">stands</span> the oak <span class="noun" data-word="lectern" data-generic="stand" data-etym="Lat. lectrum, reading desk">lectern</span> bearing an <span class="adj">early</span> volume of the Oxford English <span class="noun" data-word="Dictionary" data-generic="book" data-etym="Med. Lat. dictiōnārium">Dictionary</span>, open at the letter A. <span class="adj">Long</span> seasons of my life were <span class="verb">spent</span> inside those <span class="adj">triple</span> columns, <span class="verb">trimming</span> <span class="adj">dead</span> branches from Latin roots, <span class="verb">tracing</span> how an <span class="adj">Anglo-Saxon</span> grunt <span class="verb">softened</span> into a <span class="noun" data-word="vowel" data-generic="sound" data-etym="Lat. vōcālis, vocal">vowel</span> fit for a vicarage parlour.
+      </p>
+      <p class="paragraph">
+        I <span class="verb">lean</span> over the <span class="adj">tissue-thin</span> India paper and <span class="verb">run</span> my fingernail down the entry I <span class="verb">drafted</span> in a <span class="adj">colder</span> autumn: <em><span class="noun" data-word="aphasia" data-generic="illness" data-etym="Gr. ἀφασία, speechlessness">aphasia</span></em>, from the Greek <em>ἀφασία</em>, speechlessness. Below the headword, <span class="adj">historical</span> quotations <span class="verb">march</span> in <span class="adj">chronological</span> ranks. Yet as I <span class="verb">stare</span> at the <span class="adj">italicised</span> qualifiers—<em><span class="adj">chronic</span>, <span class="adj">amnesic</span>, <span class="adj">nominal</span>, <span class="adj">transient</span></em>—their <span class="adj">tiny</span> <span class="noun" data-word="serifs" data-generic="marks" data-etym="Du. schreef, stroke">serifs</span> <span class="verb">begin</span> to twitch and loosen like legs <span class="verb">shed</span> by <span class="adj">drowned</span> spiders. Because the core of the things they <span class="verb">describe</span> has <span class="verb">begun</span> to rot in my <span class="adj">left temporal</span> lobe, the ornaments can no longer <span class="verb">hold</span> on. I <span class="verb">shut</span> the <span class="adj">heavy</span> <span class="noun" data-word="buckram" data-generic="cloth" data-etym="OF boquerant, stiff linen">buckram</span> covers with both hands. A puff of <span class="adj">dry</span> paper-dust <span class="verb">rises</span> against my chin, smelling of vanilla and <span class="adj">old</span> hide glue.
+      </p>
+      <div class="jp-sub">
+        床板の向こうには樫の書見台が立ち、『オックスフォード英語辞典』の初期の巻が「A」の項を開いて置かれている。私の人生の長い季節が、その三段組の紙面の中で費やされた。ラテン語の語根から枯れ枝を剪定し、アングロ・サクソン人の唸り声がいかにして牧師館の応接間にふさわしい母音へと柔らいだかを辿る日々だった。<br>
+        私は薄紙のインディアペーパーに身を乗り出し、もっと寒かったある秋に自分が起草した項目に爪を滑らせる——aphasia（失語症）、ギリシャ語の ἀφασία（言葉なきこと）に由来。見出し語の下には、歴史的な引用例が年代順に隊列を組んでいる。だが、斜体で組まれた修飾語——慢性の、健忘性の、名辞の、一過性の——を見つめているうちに、その小さなセリフがピクピクと痙攣し、溺れた蜘蛛が切り離した脚のように緩み始める。それらが記述すべき事物の核が私の左前側頭葉で腐り始めたせいで、装飾の言葉たちはもはやしがみついていられないのだ。私は重いバックラム装丁の表紙を両手で閉じた。乾いた紙埃が顎の下にふっと舞い上がり、バニラと古い膠の匂いがした。
+      </div>
+    </article>
+
+    <div class="episode-head">Episode 02: Tape on the Mahogany</div>
+
+    <!-- S003 -->
+    <article class="scene-block" id="s003">
+      <span class="scene-id">[M1-C1-E02-S003]</span>
+      <p class="paragraph">
+        By noon I have <span class="verb">bought</span> rolls of painters' masking tape from the <span class="noun" data-word="ironmonger" data-generic="shop" data-etym="OE īsern + mangere, iron trader">ironmonger</span> on Garnet Street. I <span class="verb">sit</span> at the <span class="adj">mahogany</span> table, <span class="verb">turning</span> a Blackwing <span class="noun" data-word="pencil" data-generic="stick" data-etym="Lat. pēnicillus, little tail">pencil</span> inside a <span class="adj">brass</span> wedge sharpener. A ribbon of <span class="noun" data-word="cedar" data-generic="wood" data-etym="Gr. kedros">cedar</span> <span class="verb">curls</span> over my knuckles; I <span class="verb">lift</span> the shaving to my nostrils and <span class="verb">inhale</span> the <span class="adj">resinous</span> wood before <span class="verb">biting</span> the <span class="adj">painted</span> barrel between my molars, <span class="verb">feeling</span> the <span class="adj">soft</span> basswood <span class="verb">yield</span> to the <span class="noun" data-word="enamel" data-generic="tooth" data-etym="Frank. *smalt, smelting">enamel</span>.
+      </p>
+      <p class="paragraph">
+        I <span class="verb">tear</span> a strip of tape, <span class="verb">press</span> it flat against the <span class="adj">ceramic</span> cylinder holding my <span class="adj">cold</span> Earl Grey, and <span class="verb">print</span> in block capitals: MUG. I <span class="verb">cross</span> the <span class="adj">worn</span> rug and <span class="verb">label</span> the <span class="adj">cast-iron</span> ribs below the sill: RADIATOR. I <span class="verb">crouch</span> by the floorboards: OAK. Soon the flat <span class="verb">resembles</span> a room <span class="verb">catalogued</span> by a <span class="adj">frantic</span> <span class="noun" data-word="bailiff" data-generic="official" data-etym="Lat. bāiulīvus, custodian">bailiff</span>. Every <span class="adj">solid</span> object <span class="verb">wears</span> a <span class="adj">white</span> paper bandage bearing its <span class="adj">proper</span> designation. So long as <span class="noun" data-word="graphite" data-generic="carbon" data-etym="Gr. graphein, to write">graphite</span> <span class="verb">binds</span> the syllable to the timber, the furniture cannot <span class="verb">slip</span> through the walls while my back is <span class="verb">turned</span>.
+      </p>
+
+      <!-- Interactive Tape Widget -->
+      <div class="interactive-widget">
+        <div class="widget-title">
+          <span>Interactive Artifact: Masking Tape Labels (Click to peel / restore)</span>
+          <span id="tapeStatus">6 / 6 Anchored</span>
+        </div>
+        <div class="tape-grid" id="tapeGrid">
+          <span class="tape-strip" data-label="MUG">MUG</span>
+          <span class="tape-strip" data-label="RADIATOR">RADIATOR</span>
+          <span class="tape-strip" data-label="OAK">OAK</span>
+          <span class="tape-strip" data-label="LINTEL">LINTEL</span>
+          <span class="tape-strip" data-label="SKIRTING">SKIRTING</span>
+          <span class="tape-strip" data-label="LECTERN">LECTERN</span>
+        </div>
+      </div>
+
+      <div class="jp-sub">
+        正午までに、私はガーネット通りの金物屋で塗装用のマスキングテープを何巻か買ってきた。マホガニーの卓に座り、真鍮の楔形鉛筆削りの中でブラックウィングの鉛筆を回す。シダー材の削り屑がリボン状に指の関節へ巻きつく。私はそれを鼻先に近づけて脂の匂いを吸い込み、それから塗装された木軸を奥歯で噛んで、柔らかいシナノキが歯のエナメル質に窪む感触を確かめる。<br>
+        テープをひと切れ千切り、冷めたアールグレイの入った陶器の円筒に平らに貼りつけ、活字体で書く——『MUG』。擦り切れた絨毯を横切り、窓枠の下の鋳鉄の肋骨に貼る——『RADIATOR』。床板にしゃがみ込む——『OAK』。まもなくフラットは、半狂乱の執行吏が目録を作った現場のようになった。あらゆる固形物が、本来の名称を記された白い紙の包帯を巻いている。黒鉛が音節を木材へ縛りつけている限り、私が背を向けた隙に家具が壁をすり抜けて逃げ出すことはない。
+      </div>
+    </article>
+
+    <!-- S004 -->
+    <article class="scene-block" id="s004">
+      <span class="scene-id">[M1-C1-E02-S004]</span>
+      <p class="paragraph">
+        A <span class="adj">pale</span> strip of tape <span class="verb">dangles</span> from my left thumb. I <span class="verb">stand</span> before the river window, pencil <span class="verb">poised</span>, <span class="verb">trying</span> to anchor the quality of the afternoon light as it <span class="verb">filters</span> through the Thames mist. <em><span class="adj">Bleak</span>. <span class="adj">Wistful</span>. <span class="adj">Bilious</span>. <span class="adj">Lead-coloured</span>.</em>
+      </p>
+      <p class="paragraph">
+        The graphite point <span class="verb">hovers</span> over the crêpe paper, <span class="verb">trembling</span>. Where does a man <span class="verb">stick</span> the label for <em><span class="adj">bleak</span></em>? <span class="verb">Press</span> it to the pane, and it <span class="verb">names</span> the glass. <span class="verb">Press</span> it to the dampness, and it <span class="verb">names</span> the <span class="noun" data-word="condensation" data-generic="wetness" data-etym="Lat. condensāre, to thicken">condensation</span>. Qualifiers <span class="verb">have</span> no skin of their own, no edges to <span class="verb">take</span> the gum. I <span class="verb">roll</span> the <span class="adj">sticky</span> strip into a <span class="adj">tight</span> pellet between my palms and <span class="verb">drop</span> it into my <span class="noun" data-word="cardigan" data-generic="coat" data-etym="7th Earl of Cardigan, 1868">cardigan</span> pocket. Beyond the brick sill, a <span class="adj">vast, nameless</span> weight <span class="verb">leans</span> against the warehouse glass.
+      </p>
+      <div class="jp-sub">
+        白いテープの切れ端が左手の親指からぶら下がっている。私は川に面した窓の前に立ち、鉛筆を構えたまま、テムズの霧を透かして滲む午後の光の質を繋ぎ止めようとする。荒涼とした（Bleak）。物悲しい（Wistful）。胆汁質の（Bilious）。鉛色の（Lead-coloured）。<br>
+        黒鉛の芯先がクレープ紙の上で震えながら宙を彷徨う。『荒涼とした』のラベルは、いったいどこに貼ればいいのか？ 窓板に貼れば、それはガラスの名前になる。湿気に貼れば、それは結露の名前になる。形容詞には自分自身の皮膚がなく、糊を受け止める輪郭もない。私は粘着テープを掌の間で固い小玉に丸め、カーディガンのポケットに落とした。煉瓦の窓台の外では、巨大で名のない重みだけが倉庫のガラスに凭れかかっている。
+      </div>
+    </article>
+
+    <h3 class="chapter-head">Chapter 2　The Cello Case</h3>
+    <div class="episode-head">Episode 03: Elena's Dust</div>
+
+    <!-- S005 -->
+    <article class="scene-block" id="s005">
+      <span class="scene-id">[M1-C2-E03-S005]</span>
+      <p class="paragraph">
+        In the <span class="noun" data-word="alcove" data-generic="corner" data-etym="Arab. al-qubba, the vault">alcove</span> beside the chimney breast <span class="verb">stands</span> the <span class="adj">fibreglass</span> cello case Elena <span class="verb">left</span> behind when she <span class="verb">carried</span> the rest of her life north to Hampstead. She had <span class="verb">bought</span> a <span class="adj">lighter</span> carbon shell for an autumn tour; this <span class="adj">scarred, black</span> <span class="noun" data-word="cocoon" data-generic="shell" data-etym="Prov. coucou, shell">cocoon</span> <span class="verb">stayed</span> in the corner like an <span class="adj">upright</span> <span class="noun" data-word="sarcophagus" data-generic="box" data-etym="Gr. sarkophagos, flesh-eating stone">sarcophagus</span>.
+      </p>
+      <p class="paragraph">
+        I <span class="verb">kneel</span> on the boards and <span class="verb">draw</span> my forefinger across its <span class="adj">curved</span> belly. <span class="adj">Grey</span> dust <span class="verb">gathers</span> in a <span class="adj">felt-like</span> roll under my nail. Beneath the dust, the <span class="noun" data-word="lacquer" data-generic="coating" data-etym="Port. laca, resin">lacquer</span> still <span class="verb">breathes</span> a <span class="adj">faint</span> ghost of <span class="adj">dark</span> pine <span class="noun" data-word="rosin" data-generic="sap" data-etym="Lat. rēsīna">rosin</span>. When the first nouns <span class="verb">began</span> to slip through the <span class="noun" data-word="sieve" data-generic="mesh" data-etym="OE sife">sieve</span> of my brain—when I <span class="verb">called</span> her music stand a "metal stork" during rehearsal and could not <span class="verb">summon</span> the word <em><span class="noun" data-word="arpeggio" data-generic="chord" data-etym="Ital. arpeggiare, to play on a harp">arpeggio</span></em>—terror <span class="verb">made</span> me <span class="adj">vicious</span>. "Your cello is horsehair <span class="verb">scraping</span> <span class="adj">dried</span> sheep-gut," I <span class="verb">told</span> her, <span class="verb">sneering</span> over my teacup so she would not <span class="verb">notice</span> my fingers <span class="verb">rattling</span> against the <span class="noun" data-word="saucer" data-generic="plate" data-etym="OF saussier, salt-dish">saucer</span>. Better that she <span class="verb">despise</span> me for a <span class="adj">cold-blooded</span> <span class="noun" data-word="pedant" data-generic="scholar" data-etym="Ital. pedante, teacher">pedant</span> than <span class="verb">stay</span> to watch the <span class="noun" data-word="lexicographer" data-generic="writer" data-etym="Gr. lexikographos">lexicographer</span> <span class="verb">drool</span> over his alphabet. Now I <span class="verb">try</span> to summon the colour of her coat on the afternoon the front door <span class="verb">latched</span> behind her, and <span class="verb">find</span> only <span class="adj">grey</span> static.
+      </p>
+      <div class="jp-sub">
+        煙突の張り出しの脇の窪みに、エレーナが残していったグラスファイバー製のチェロケースが立っている。彼女は人生の残りを抱えて北のハムステッドへ去ったのだ。秋の演奏旅行のために軽いカーボン製のケースを新調した彼女は、傷だらけのこの黒い繭を、直立した石棺のように部屋の隅へ置いていった。<br>
+        私は床板に膝をつき、その湾曲した腹に人差し指を滑らせる。灰色の埃がフェルトのような塊になって爪の下に溜まる。埃の下で、塗装面はまだ黒松脂の微かな亡霊を吐き出している。最初の名詞たちが私の脳の篩からこぼれ落ち始めた頃——リハーサル中に彼女の譜面台を「金属のコウノトリ」と呼び、アルペジオという単語が出てこなくなったとき——恐怖が私を残忍にした。「君のチェロなんて、乾いた羊の腸を馬の尻尾で擦っているだけじゃないか」。受け皿の上で指が震えているのを悟られまいと、私はティーカップ越しにせせら笑ってみせた。辞書編纂者がアルファベットの上によだれを垂らす姿をそばで見守らせるくらいなら、冷血な衒学者として軽蔑された方がましだった。いま、玄関の錠前が彼女の背後で落ちたあの午後、彼女が着ていたコートの色を呼び起こそうとしても、そこには灰色の砂嵐しか見つからない。
+      </div>
+    </article>
+
+    <!-- S006 -->
+    <article class="scene-block" id="s006">
+      <span class="scene-id">[M1-C2-E03-S006]</span>
+      <p class="paragraph">
+        I <span class="verb">leave</span> the lid shut. Inside <span class="verb">lies</span> only <span class="adj">crushed blue</span> plush and the <span class="adj">velvet</span> hollow where a maple <span class="noun" data-word="bridge" data-generic="wood" data-etym="OE brycg">bridge</span> once <span class="verb">pressed</span>. Instead, I <span class="verb">hook</span> my thumbnail beneath the <span class="adj">lower brass</span> <span class="noun" data-word="latch" data-generic="catch" data-etym="OE læccan, to grasp">latch</span> and <span class="verb">flick</span> it upward.
+      </p>
+      <p class="paragraph">
+        <em>Clack.</em>
+      </p>
+      <p class="paragraph">
+        A <span class="adj">sharp metallic</span> report <span class="verb">snaps</span> through the room, <span class="verb">followed</span> by a <span class="adj">low, cavernous</span> hum from the <span class="adj">empty</span> shell—a <span class="adj">deep</span> G <span class="verb">vibrating</span> through the soles of my wool socks. Vibration <span class="verb">requires</span> no grammar. It <span class="verb">asks</span> for no adjective. I <span class="verb">flick</span> the brass tongue again, <span class="verb">pressing</span> my cheek against the <span class="adj">cold</span> fibreglass until the ringing <span class="verb">merges</span> with the diesel throb of a <span class="noun" data-word="tugboat" data-generic="boat" data-etym="ME toggen, to pull">tugboat</span> passing outside.
+      </p>
+
+      <!-- Interactive Cello Latch Acoustic Widget -->
+      <div class="interactive-widget">
+        <div class="widget-title">
+          <span>Interactive Acoustic Trigger: Empty Cello Shell</span>
+          <span id="latchCount">Resonance: 98.0 Hz (G2)</span>
+        </div>
+        <button class="action-btn" id="celloLatchBtn">Flick Brass Latch (Clack + G2 Cavity Hum)</button>
+      </div>
+
+      <div class="jp-sub">
+        蓋は開けないでおく。内側にあるのは押し潰された青いプラッシュ布と、かつて楓の駒が押し当てられていたビロードの窪みだけだ。代わりに、私は下の真鍮の留め金に親指の爪を引っ掛け、上へ弾いた。<br>
+        パチン。<br>
+        鋭い金属音が部屋を裂き、続いて空っぽの殻から低く洞窟めいた共鳴が立ち昇る——ウールの靴下の底を震わせる、深いG（ソ）の倍音。振動は文法を必要としない。形容詞も求めない。私は真鍮の舌をもう一度弾き、冷たいグラスファイバーに頬を押し当てたまま、その残響が外を通り過ぎる曳舟のディーゼルエンジンの脈動と溶け合うまでじっとしていた。
+      </div>
+    </article>
+
+    <div class="episode-head">Episode 04: The Niece with the Code</div>
+
+    <!-- S007 -->
+    <article class="scene-block" id="s007">
+      <span class="scene-id">[M1-C2-E04-S007]</span>
+      <p class="paragraph">
+        Toward dusk the entry buzzer <span class="verb">rasps</span>. Mayuki <span class="verb">climbs</span> the stairs from the street, <span class="verb">bringing</span> the <span class="adj">cold</span> smell of Shoreditch rain and a <span class="adj">brown</span> paper bag <span class="adj">heavy</span> with <span class="adj">dark purple</span> <span class="noun" data-word="figs" data-generic="fruit" data-etym="Lat. fīcus">figs</span>. While the kettle <span class="verb">builds</span> to a rumble on the <span class="noun" data-word="hob" data-generic="stove" data-etym="Early Mod. Eng. hob, hearth-ledge">hob</span>, she <span class="verb">sets</span> her <span class="adj">silver</span> laptop among my <span class="adj">white</span> tape bandages, her <span class="adj">dark</span> eyes <span class="verb">moving</span> from KETTLE to TAP to SPOON without a flicker of pity.
+      </p>
+      <p class="paragraph">
+        I <span class="verb">pinch</span> <span class="adj">dry</span> Earl Grey leaves from the <span class="noun" data-word="caddy" data-generic="tin" data-etym="Malay kati, weight measure">caddy</span> and <span class="verb">chew</span> them raw between my molars. <span class="adj">Bitter</span> <span class="noun" data-word="bergamot" data-generic="citrus" data-etym="Ital. bergamotta">bergamot</span> oil <span class="verb">stings</span> my gums, <span class="verb">slicing</span> through the wool in my head.
+      </p>
+      <p class="paragraph">
+        "When I was small, Uncle Julian," Mayuki <span class="verb">says</span>, <span class="verb">lifting</span> her screen, "I <span class="verb">cried</span> in the garden because I couldn't <span class="verb">tell</span> the difference between <em>shadow</em> and <em>shade</em>. You <span class="verb">drew</span> a cedar tree on a <span class="noun" data-word="napkin" data-generic="cloth" data-etym="OF nappe, tablecloth">napkin</span> and <span class="verb">showed</span> me how words <span class="verb">hold</span> the light at <span class="adj">different</span> angles." She <span class="verb">swivels</span> the monitor toward my chair. Across a <span class="adj">dark</span> ground, lines of <span class="adj">pale serif</span> text <span class="verb">float</span> inside <span class="adj">nested</span> brackets of code. "The <span class="noun" data-word="neurologist" data-generic="doctor" data-etym="Gr. neuron + logia">neurologist</span> <span class="verb">says</span> the <span class="adj">semantic</span> net <span class="verb">unravels</span> from the specific to the general. So don't <span class="verb">fight</span> the unravelling on paper. <span class="verb">Give</span> the words to me. Let me <span class="verb">write</span> a page that <span class="verb">forgets</span> at the same pace you do."
+      </p>
+      <div class="jp-sub">
+        夕暮れ近く、玄関のブザーが掠れた音を立てる。マユキが通りから階段を上ってやってくる。ショーディッチの雨の冷たい匂いと、濃い紫色の無花果がずっしり入った茶色い紙袋を携えて。コンロの上で薬缶が唸り始めるあいだ、彼女は私の白いテープの包帯だらけの卓上に銀色のノートパソコンを置き、黒い瞳を『KETTLE』『TAP』『SPOON』へと滑らせる。その目に憐れみの色は微塵もない。<br>
+        私は茶筒から乾いたアールグレイの茶葉をひとつまみ取り、そのまま奥歯で噛み潰す。苦いベルガモットの精油が歯茎を刺し、頭の中の綿毛を切り裂いてくれる。<br>
+        「私が小さかった頃、ジュリアン叔父さん」とマユキは画面を開きながら言う。「庭で泣いていた私に、shadow と shade の違いを教えてくれたでしょう。ナプキンに杉の木を描いて、言葉がどうやって違う角度で光を受け止めるか見せてくれた」。彼女はモニターを私の椅子の方へ向けた。暗い背景の上に、淡いセリフ体の文字列が、入れ子になったコードの括弧に包まれて浮かんでいる。「神経科の先生は、意味の網の目は特殊なものから一般的なものへと解けていくって言った。だったら、紙の上でそれに逆らわないで。言葉を私に預けて。叔父さんが忘れるのと同じ速度で忘れていくウェブページを、私に組ませて」
+      </div>
+    </article>
+
+    <!-- S008 -->
+    <article class="scene-block" id="s008">
+      <span class="scene-id">[M1-C2-E04-S008]</span>
+      <p class="paragraph">
+        <span class="adj">Warm</span> exhaust from her processor fan <span class="verb">brushes</span> my wrist. I <span class="verb">peer</span> at the <span class="adj">glowing</span> Document Object Model in her inspector pane: spans and classes <span class="verb">nested</span> like <span class="adj">wooden</span> dolls, each word <span class="verb">wrapped</span> in its <span class="adj">grammatical</span> <span class="noun" data-word="shroud" data-generic="cloth" data-etym="OE scrūd, garment">shroud</span>.
+      </p>
+      <p class="paragraph">
+        I <span class="verb">reach</span> out with two fingers and <span class="verb">tap</span> her <span class="adj">black plastic</span> keys. C-A-L-I-G-O. Latin for mist, darkness, <span class="noun" data-word="vertigo" data-generic="dizziness" data-etym="Lat. vertīgō, whirling">vertigo</span>. Then: L-A-C-U-N-A. A <span class="adj">missing</span> line in an <span class="adj">ancient</span> <span class="noun" data-word="manuscript" data-generic="writing" data-etym="Med. Lat. manu scriptus, written by hand">manuscript</span>.
+      </p>
+      <p class="paragraph">
+        "A dictionary in reverse," I <span class="verb">murmur</span>, <span class="verb">rubbing</span> my thumb against my forefinger. <em>Shhh-shhh.</em> "As the reader <span class="verb">moves</span> down the glass, the modifiers <span class="verb">bleach</span> into the dark. When they <span class="verb">touch</span> a name, it <span class="verb">drops</span> through the floorboards."
+      </p>
+      <p class="paragraph">
+        Mayuki's fingers <span class="verb">dance</span> across the <span class="noun" data-word="trackpad" data-generic="surface" data-etym="Mod. Eng. track + pad">trackpad</span>, <span class="verb">binding</span> an event listener to my voice. "A <span class="noun" data-word="monument" data-generic="marker" data-etym="Lat. monēre, to remind">monument</span> <span class="verb">built</span> of tide-sand," she <span class="verb">whispers</span>. "We'll let the browser <span class="verb">keep</span> the ghosts."
+      </p>
+      <div class="jp-sub">
+        彼女のプロセッサ・ファンから出る温かい排気が私の手首を撫でる。私はインスペクタ画面の中で光る DOM を覗き込む。入れ子の木製人形のように重なった span と class、すべての単語がそれぞれの文法的経帷子に包まれている。<br>
+        私は二本の指を伸ばし、黒いプラスチックのキーを叩く。C-A-L-I-G-O。霧、暗闇、眩暈を意味するラテン語。続けて、L-A-C-U-N-A。古写本における欠落行。<br>
+        「逆向きの辞書だな」と私は呟き、親指と人差し指の腹を擦り合わせる。シュッ、シュッ。「読者がガラスの下へとスクロールするにつれて、修飾語が闇へ晒されて消える。彼らが名前に触れれば、その語は床板を突き抜けて落下する」<br>
+        マユキの指がトラックパッドの上を舞い、私の声にイベントリスナーを結びつける。「潮騒の砂で築く記念碑よ」と彼女は囁く。「ブラウザに亡霊たちを預かってもらいましょう」
+      </div>
+    </article>
+
+    <!-- ================================================================= -->
+    <!-- ACT II: THE FRACTURE OF NOUNS                                     -->
+    <!-- ================================================================= -->
+    <div class="act-banner" id="act2">
+      <span class="act-label">Act II · Wapping, February</span>
+      <h2 class="act-name">The Fracture of Nouns</h2>
+      <p class="act-desc">Phase 2 Semantic Dementia: Specific nouns regress to generic hypernyms and collapse into `[____]`.</p>
+    </div>
+
+    <h3 class="chapter-head">Chapter 3　The Kitchen of Nameless Things</h3>
+    <div class="episode-head">Episode 05: The Pear That Was Not a Pear</div>
+
+    <!-- S009 -->
+    <article class="scene-block" id="s009">
+      <span class="scene-id">[M2-C3-E05-S009]</span>
+      <p class="paragraph">
+        February frost <span class="verb">rims</span> the kitchen <span class="noun" data-word="casement" data-generic="window" data-etym="OF chasement, frame">casement</span>. On the counter <span class="verb">sits</span> an <span class="adj">earthenware</span> <span class="noun" data-word="bowl" data-generic="dish" data-etym="OE bolla, round vessel">bowl</span> holding the <span class="noun" data-word="figs" data-generic="fruit" data-etym="Lat. fīcus">figs</span> Mayuki <span class="verb">poached</span> in <span class="adj">white</span> wine and <span class="noun" data-word="cinnamon" data-generic="spice" data-etym="Heb. qinnāmōn">cinnamon</span> bark last night. I <span class="verb">lift</span> one by its <span class="adj">shrivelled</span> stem. <span class="adj">Dark</span> <span class="noun" data-word="syrup" data-generic="liquid" data-etym="Arab. sharāb, beverage">syrup</span> <span class="verb">drips</span> onto my knuckle, <span class="adj">thick and cold</span>.
+      </p>
+      <p class="paragraph">
+        I <span class="verb">know</span> where this object <span class="verb">grows</span>—on <span class="adj">twisted grey</span> branches leaning over <span class="adj">warm Mediterranean</span> stones. I <span class="verb">know</span> that <span class="verb">splitting</span> its <span class="adj">purple</span> skin <span class="verb">reveals</span> a <span class="adj">wet crimson</span> hollow <span class="verb">packed</span> with <span class="adj">tiny</span> seeds. Yet when I <span class="verb">reach</span> into the cupboard of my skull for its designation, my hand <span class="verb">closes</span> on air.
+      </p>
+      <p class="paragraph">
+        "Pear," I <span class="verb">say</span> aloud to the tiles. Wrong. A pear is <span class="adj">pale, gritty, swollen</span> at the base. This is <span class="adj">smaller, slack-skinned</span>. "Plum." Wrong. A plum <span class="verb">hides</span> a <span class="adj">single hard</span> stone at the centre. "Fruit," I <span class="verb">mutter</span>, and even that <span class="adj">broader</span> word <span class="verb">hangs</span> loose around the object like a <span class="adj">dead</span> man's coat. Finally: "This <span class="adj">sweet</span> thing."
+      </p>
+      <p class="paragraph">
+        I <span class="verb">push</span> the whole <span class="adj">dark</span> globe into my mouth. The skin <span class="verb">yields</span>; <span class="adj">spiced</span> wine <span class="verb">floods</span> my palate; the seeds <span class="verb">crackle</span> between my teeth like river <span class="noun" data-word="gravel" data-generic="stone" data-etym="OF gravele, coarse sand">gravel</span>. With its name gone, nothing <span class="verb">stands</span> between my tongue and the <span class="noun" data-word="pulp" data-generic="flesh" data-etym="Lat. pulpa, flesh of fruit">pulp</span>. The sweetness is almost <span class="adj">violent</span>.
+      </p>
+      <div class="jp-sub">
+        二月の霜が台所の開き窓を縁取っている。カウンターの上には陶器鉢が置かれ、昨晩マユキが白ワインとシナモンの樹皮で煮てくれた果実が入っている。私は萎びた軸をつまんでひとつ持ち上げる。黒いシロップが指の関節にぽたりと垂れ、濃厚な冷たさを残す。<br>
+        この物体がどこで育つかは知っている——温かい地中海の石垣に張り出した、ねじれた灰色の枝の上だ。紫の皮を割れば、無数の小さな種が詰まった濡れた真紅の空洞が現れることも知っている。それなのに、頭蓋の戸棚へ手を伸ばしてその名称を取ろうとすると、私の手は空を掴む。<br>
+        「梨」と、私はタイルに向かって声に出す。違う。梨は青白く、ざらついていて、尻が膨らんでいる。これはもっと小さく、皮がたるんでいる。「李」。違う。李は真ん中に硬い種をひとつ隠している。「果物」と呟いてみるが、その広い言葉さえも、死人の外套のように物体の周りでぶかぶかに余ってしまう。最後に、「この甘いもの」。<br>
+        私はその暗い球体を丸ごと口に押し込んだ。皮が破れ、スパイスの効いたワインが上顎を満たし、種が川底の砂利のように歯の間で弾ける。名前が消え去ったことで、私の舌と果肉のあいだを隔てるものは何ひとつなくなった。その甘みは、暴力的とすら言えた。
+      </div>
+    </article>
+
+    <!-- S010 -->
+    <article class="scene-block" id="s010">
+      <span class="scene-id">[M2-C3-E05-S010]</span>
+      <p class="paragraph">
+        Mayuki <span class="verb">sits</span> opposite me on a Saturday morning, <span class="verb">unpacking</span> a canvas bag onto the <span class="adj">dark</span> wood table. She <span class="verb">arranges</span> a <span class="adj">neat</span> row of household things: a <span class="adj">perforated metal</span> <span class="noun" data-word="colander" data-generic="basin" data-etym="Lat. cōlāre, to strain">colander</span> for draining boiled greens, a wire mesh <span class="noun" data-word="strainer" data-generic="scoop" data-etym="OF estreindre, to press tight">strainer</span> for catching tea leaves, a <span class="adj">twisted steel</span> <span class="noun" data-word="corkscrew" data-generic="worm" data-etym="Mod. Eng. cork + screw">corkscrew</span>, and a <span class="noun" data-word="lemon" data-generic="citrus" data-etym="Arab. līmūn">lemon</span>.
+      </p>
+      <p class="paragraph">
+        "Take your time, Julian," she <span class="verb">says</span>, <span class="verb">keeping</span> her voice level, her fingertips <span class="verb">resting</span> on the edge of her keyboard.
+      </p>
+      <p class="paragraph">
+        I <span class="verb">point</span> at the <span class="adj">yellow</span> oval. "Lemon," I <span class="verb">say</span>.
+      </p>
+      <p class="paragraph">
+        I <span class="verb">shift</span> my finger to the metal basin <span class="verb">punched</span> with <span class="adj">small star-shaped</span> holes. Behind my eyes I <span class="verb">see</span> boiling water <span class="verb">rushing</span> through it, <span class="adj">white</span> steam <span class="verb">clouding</span> my <span class="noun" data-word="spectacles" data-generic="glasses" data-etym="Lat. spectāculum, instrument of sight">spectacles</span>. I <span class="verb">mime</span> shaking two side-handles in the air. "The... the water-sieve. The basin that <span class="verb">lets</span> the wet out."
+      </p>
+      <p class="paragraph">
+        Mayuki does not <span class="verb">offer</span> <em>colander</em>. She <span class="verb">knows</span> how fiercely I <span class="verb">loathe</span> the alms of a <span class="adj">rescued</span> noun. Instead, she <span class="verb">depresses</span> a key. On her <span class="adj">dark</span> screen, the word <span class="verb">shivers</span> once and <span class="verb">collapses</span> into a <span class="adj">leaden</span> slot: <code>[____]</code>. My throat <span class="verb">tightens</span>; I <span class="verb">swallow</span> <span class="adj">dry</span> spit and <span class="verb">point</span> to the wire tea-scoop in silence.
+      </p>
+      <div class="jp-sub">
+        土曜日の朝、マユキは私の向かいに座り、帆布の袋から暗い木のテーブルへ日用品を取り出して一列に並べる。茹でた青菜の水を切る穴あきの金属鉢、茶葉を受け止める金網の掬い具、コルクを抜くための捻れた鋼の虫、そしてレモン。<br>
+        「ゆっくりでいいわ、ジュリアン」と彼女は平坦な声を保ったまま、キーボードの端に指先を添えて言う。<br>
+        私は黄色い楕円を指差す。「レモン」と私は言う。<br>
+        次に、小さな星形の穴が穿たれた金属の鉢へ指を移す。瞼の裏では、沸騰した湯がそこを通り抜け、白い湯気が私の眼鏡を曇らせる光景が見えている。私は空中で両脇の取っ手を振るパントマイムをする。「その……水篩だ。濡れたものを外へ逃がす鉢」<br>
+        マユキは colander（水切りボウル）という単語を恵んではこない。救済された名詞の施しを私がどれほど激しく憎んでいるか、彼女は知っているのだ。代わりに彼女はキーをひとつ押し下げる。暗い画面の上で、その語が一度だけ身震いし、鉛色の空欄 [____] へと崩落した。喉が締めつけられる。私は乾いた唾を飲み込み、無言のまま金網の茶漉しを指差した。
+      </div>
+    </article>
+
+    <div class="episode-head">Episode 06: Bread and Knife</div>
+
+    <!-- S011 -->
+    <article class="scene-block" id="s011">
+      <span class="scene-id">[M2-C3-E06-S011]</span>
+      <p class="paragraph">
+        The loaf on the chopping board has <span class="verb">gone</span> <span class="adj">stale</span>, its crust <span class="verb">baked</span> into <span class="adj">brown</span> armour. I <span class="verb">pull</span> open the drawer and <span class="verb">close</span> my fist around the <span class="adj">riveted wooden</span> grip of the <span class="adj">long steel</span> <span class="noun" data-word="blade" data-generic="metal" data-etym="OE blæd, leaf / flat edge">blade</span> with the <span class="adj">scalloped</span> teeth.
+      </p>
+      <p class="paragraph">
+        As I <span class="verb">lift</span> it into the <span class="adj">pale</span> light from the casement, the <span class="adj">domestic</span> compound <em><span class="noun" data-word="bread-knife" data-generic="cutter" data-etym="OE brēad + cnīf">bread-knife</span></em> <span class="verb">dissolves</span>. What my right fist <span class="verb">holds</span> is <span class="verb">stripped</span> of its <span class="adj">tame</span> kitchen category. <span class="adj">Long Sheffield</span> steel <span class="verb">gleams</span> in the gloom, <span class="verb">ground</span> into a row of Ripper fangs, the <span class="adj">heavy</span> <span class="noun" data-word="tang" data-generic="iron" data-etym="ON tangi, spit of metal">tang</span> <span class="verb">pulling</span> at the <span class="noun" data-word="tendons" data-generic="cords" data-etym="Gr. tenōn, sinew">tendons</span> of my wrist. I <span class="verb">stare</span> at the <span class="adj">polished</span> flat of the metal, <span class="verb">watching</span> my own <span class="adj">warped</span> eye <span class="verb">stare</span> back. When the lexicon <span class="verb">dies</span>, objects do not <span class="verb">grow</span> blurry; they <span class="verb">grow</span> <span class="adj">feral</span>. Every tool in the room <span class="verb">bristles</span> with <span class="adj">raw</span> iron and edge.
+      </p>
+      <div class="jp-sub">
+        まな板の上のパン塊は古びて乾き、その外皮は茶色い鎧のように硬くなっている。私は引き出しを引き開け、波状の歯がついた長い鋼の刃の、リベット留めされた木の柄を拳で握りしめる。<br>
+        窓からの淡い光の中へそれを持ち上げた瞬間、bread-knife（パン切り包丁）という家庭的な複合語が溶けて消えた。私の右拳が握っているものは、飼い慣らされた台所のカテゴリーを剥ぎ取られていた。長いシェフィールド鋼が薄暗がりの中でぎらつき、切り裂き魔の牙の列のように研ぎ澄まされ、重い中子が手首の腱をぐいと引っ張る。磨かれた金属の平らな面を見つめると、歪んだ自分の片目がこちらを見返している。辞書が死ぬとき、事物はぼやけるのではない。野生に還るのだ。部屋中のあらゆる道具が、剥き出しの鉄と刃先を逆立てている。
+      </div>
+    </article>
+
+    <!-- S012 -->
+    <article class="scene-block" id="s012">
+      <span class="scene-id">[M2-C3-E06-S012]</span>
+      <p class="paragraph">
+        I <span class="verb">set</span> the <span class="adj">serrated</span> teeth against the loaf and <span class="verb">saw</span> downward. The steel <span class="verb">skids</span> off the <span class="adj">hard flour-dusted</span> dome and <span class="verb">grazes</span> the knuckle of my left thumb.
+      </p>
+      <p class="paragraph">
+        A <span class="adj">shallow</span> parting of the skin. A bead of <span class="adj">bright</span> <span class="noun" data-word="carmine" data-generic="blood" data-etym="Arab. qirmiz, crimson insect">carmine</span> <span class="verb">swells</span> from the crease, <span class="adj">round and heavy</span> as <span class="noun" data-word="mercury" data-generic="metal" data-etym="Lat. Mercurius, quicksilver">mercury</span>.
+      </p>
+      <p class="paragraph">
+        "<span class="verb" style="color: var(--accent-crimson);">Red</span>," I <span class="verb">whisper</span>. The syllable <span class="verb">holds</span> fast.
+      </p>
+      <p class="paragraph">
+        A <span class="adj">hot</span> wire of pain <span class="verb">climbs</span> the nerve from thumb to elbow.
+      </p>
+      <p class="paragraph">
+        "<span class="verb" style="color: var(--accent-crimson);">Hurt</span>," I <span class="verb">say</span>. That word <span class="verb">holds</span> too. I <span class="verb">press</span> my knuckle to my lips and <span class="verb">taste</span> the <span class="adj">hot</span> copper of my own salt. Pain <span class="verb">sits</span> at the bottom of the well where the water never <span class="verb">freezes</span>.
+      </p>
+      <div class="jp-sub">
+        私は鋸歯をパン塊に当て、下へ向かって挽いた。鋼は粉を吹いた硬い丸屋根で滑り、左手の親指の関節をかすめた。<br>
+        皮膚の浅い裂け目。鮮やかな洋紅色の玉が皺の間から盛り上がり、水銀のように丸く重たく膨らむ。<br>
+        「赤（Red）」と私は囁く。その音節はしっかりと踏みとどまる。<br>
+        痛みの熱い針金が、親指から肘へと神経を駆け上がる。<br>
+        「痛い（Hurt）」と私は言う。その語も踏みとどまる。私は関節を唇に押し当て、自分自身の塩が持つ熱い銅の味を確かめた。痛みは、決して水が凍らない井戸の底に座っている。
+      </div>
+    </article>
+
+    <h3 class="chapter-head">Chapter 4　The Rain Without a Sky</h3>
+    <div class="episode-head">Episode 07: River Thames in Grey</div>
+
+    <!-- S013 -->
+    <article class="scene-block" id="s013">
+      <span class="scene-id">[M2-C4-E07-S013]</span>
+      <p class="paragraph">
+        Low water at Wapping. Most of the <span class="adj">white</span> tape bandages have <span class="verb">curled</span> and <span class="verb">dropped</span> from the furniture like <span class="adj">shed</span> skin; I <span class="verb">leave</span> them on the rug because the block capitals <span class="verb">written</span> on their backs—LINTEL, RADIATOR, SKIRTING—now <span class="verb">resemble</span> <span class="adj">Phoenician</span> scratches <span class="verb">made</span> by a <span class="adj">dead</span> <span class="noun" data-word="tenant" data-generic="stranger" data-etym="Lat. tenēre, to hold">tenant</span>.
+      </p>
+      <p class="paragraph">
+        I <span class="verb">stand</span> by the <span class="adj">tall</span> glass and <span class="verb">look</span> down. The <span class="adj">proper</span> name <em><span class="noun" data-word="Thames" data-generic="water" data-etym="Celt. Tamesas, dark river">Thames</span></em> has <span class="verb">vanished</span>. The <span class="adj">common</span> noun <em><span class="noun" data-word="river" data-generic="channel" data-etym="Lat. rīpāria, riverbank">river</span></em> has <span class="verb">followed</span> it. Beneath the brick wall <span class="verb">lies</span> a <span class="adj">vast open</span> trench of <span class="adj">wet, breathing</span> grease. <span class="adj">Long</span> banks of <span class="adj">black</span> <span class="noun" data-word="silt" data-generic="mud" data-etym="ME cilte, sediment">silt</span> <span class="verb">glisten</span> like the backs of whales <span class="verb">stranded</span> in the drizzle, <span class="verb">rising</span> with the stench of <span class="adj">rotted</span> <span class="noun" data-word="bladderwrack" data-generic="weed" data-etym="Mod. Eng. bladder + wrack">bladderwrack</span>, diesel oil, and centuries of <span class="adj">rusted</span> chain. A <span class="adj">colossal</span> muscle of <span class="adj">grey</span> mud <span class="verb">heaves</span> seaward under the rain.
+      </p>
+      <div class="jp-sub">
+        ワッピングの干潮。白いテープの包帯の大半は丸まって、脱皮した皮のように家具から剥がれ落ちている。私はそれを絨毯の上に放置している。裏側に書かれた活字体——『LINTEL』『RADIATOR』『SKIRTING』——が、いまでは死んだ前住人が引っ掻いたフェニキア文字のように見えるからだ。<br>
+        私は背の高いガラスのそばに立ち、下を見下ろす。Thames という固有名詞は消え失せた。river という普通名詞もその後を追った。煉瓦壁の真下に横たわっているのは、濡れて呼吸する脂の巨大な裂け目だ。黒いシルトの長い洲が、霧雨の中で座礁した鯨の背中のようにてかり、腐ったヒバマタとディーゼル油と何世紀もの錆びた鎖の悪臭を立ち昇らせている。灰色の泥でできた途方もない筋肉が、雨の下で海へ向かってうねっている。
+      </div>
+    </article>
+
+    <!-- S014 -->
+    <article class="scene-block" id="s014">
+      <span class="scene-id">[M2-C4-E07-S014]</span>
+      <p class="paragraph">
+        Along the <span class="adj">narrow</span> <span class="noun" data-word="cobbles" data-generic="stones" data-etym="ME cobbe, rounded lump">cobbles</span> on the <span class="adj">landward</span> side of the warehouse, figures <span class="verb">move</span> through the dusk rain. Half a year ago I would have <span class="verb">parsed</span> them like a sentence: <span class="noun" data-word="solicitors" data-generic="workers" data-etym="OF soliciter, to urge">solicitors</span> <span class="verb">hastening</span> toward the station, a <span class="noun" data-word="courier" data-generic="rider" data-etym="Lat. currere, to run">courier</span> <span class="verb">hunched</span> over handlebars, a woman <span class="verb">leading</span> a <span class="adj">brindle</span> <span class="noun" data-word="terrier" data-generic="dog" data-etym="OF chien terrier, earth-dog">terrier</span>.
+      </p>
+      <p class="paragraph">
+        Now the nouns that <span class="verb">sorted</span> them into professions and errands have <span class="verb">washed</span> into the gutter. I <span class="verb">watch</span> <span class="adj">two-legged warm</span> bodies <span class="verb">moving</span> beneath <span class="adj">bobbing</span> domes of <span class="adj">taut black</span> cloth. I <span class="verb">watch</span> rubber soles <span class="verb">kicking</span> <span class="adj">silver</span> arcs from puddles. <span class="verb">Stripped</span> of their titles, they <span class="verb">look</span> <span class="adj">piercingly fragile</span>—<span class="adj">soft</span> creatures <span class="verb">carrying</span> paper parcels of food through the <span class="adj">falling</span> water, <span class="verb">leaning</span> into the wind so as not to <span class="verb">fall</span>.
+      </p>
+      <div class="jp-sub">
+        倉庫の陸側を走る狭い石畳に沿って、夕暮れの雨の中を人影が動いていく。半年前の私なら、彼らを一文のように構文解析していただろう——駅へと急ぐ事務弁護士たち、ハンドルの上に背中を丸めた自転車便の配達員、虎毛のテリアを連れた女性。<br>
+        いまや、彼らを職業や用向きへと仕分けていた名詞は側溝へと洗い流された。ピンと張った黒い布の丸屋根を揺らしながら、二本足の温かい身体が動いていくのを私は見つめる。ゴムの靴底が水たまりから銀色の弧を蹴り上げるのを見つめる。肩書きを剥ぎ取られた彼らは、胸を突くほど脆く見える——降りしきる水の中、食べ物の入った紙包みを抱え、倒れまいと風に向かって身を傾ける柔らかい生き物たち。
+      </div>
+    </article>
+
+    <div class="episode-head">Episode 08: The Lost Subjunctive</div>
+
+    <!-- S015 -->
+    <article class="scene-block" id="s015">
+      <span class="scene-id">[M2-C4-E08-S015]</span>
+      <p class="paragraph">
+        On my desk <span class="verb">lies</span> a <span class="adj">buff</span> folder of <span class="noun" data-word="offprints" data-generic="papers" data-etym="Mod. Eng. off + print">offprints</span>: my <span class="noun" data-word="monograph" data-generic="essay" data-etym="Gr. monos + graphein">monograph</span> on the <span class="adj">subjunctive</span> mood in Middle English lyrics. I <span class="verb">open</span> the paper wrapper near the middle.
+      </p>
+      <p class="paragraph">
+        <em>"Were the speaker to posit a counterfactual desire, the inflectional ending would..."</em>
+      </p>
+      <p class="paragraph">
+        My eyes <span class="verb">skid</span> across the print as though the ink were <span class="verb">smeared</span> with lard. <em>If. Were. Would have been. Whomsoever.</em> The <span class="adj">small brass</span> <span class="noun" data-word="hinges" data-generic="joints" data-etym="ME hengen, to hang">hinges</span> of grammar—the pins that <span class="verb">allow</span> a <span class="adj">human</span> creature to <span class="verb">throw</span> a bridge into yesterday or tomorrow, or into a room that never <span class="verb">existed</span>—have <span class="verb">rusted</span> through. A thought can no longer <span class="verb">turn</span> a corner. Every <span class="adj">hypothetical</span> door is <span class="verb">bricked</span> up. Only the table in front of my nose <span class="verb">remains</span>.
+      </p>
+      <div class="jp-sub">
+        机の上には、淡黄色の抜刷フォルダが置かれている。中英語の抒情詩における仮定法についての私の研究論文だ。私は紙の表紙を真ん中あたりで開く。<br>
+        「仮に話者が反事実的な願望を措定するならば、屈折語尾は……」<br>
+        インクにラードが塗られているかのように、私の視線は活字の上を滑り落ちる。もし。であったなら。であっただろうに。誰であれ。文法の小さな真鍮の蝶番——人間の精神が昨日や明日へ、あるいは存在しなかった部屋へと橋を架けることを可能にする留めピン——は、芯まで錆びついて折れていた。思考はもはや角を曲がることができない。あらゆる仮定の扉は煉瓦で塞がれた。ただ鼻の前のテーブルだけが残っている。
+      </div>
+    </article>
+
+    <!-- S016 -->
+    <article class="scene-block" id="s016">
+      <span class="scene-id">[M2-C4-E08-S016]</span>
+      <p class="paragraph">
+        From the bottom drawer I <span class="verb">pull</span> the <span class="adj">blue</span> airmail pad <span class="verb">filled</span> with <span class="adj">unsent</span> drafts to Elena. Every sheet <span class="verb">begins</span> with a <span class="adj">conditional</span> clause:
+      </p>
+
+      <!-- Interactive Subjunctive Shredder Widget -->
+      <div class="interactive-widget">
+        <div class="widget-title">
+          <span>Interactive Syntax Collapse: Unsent Conditional Drafts</span>
+          <span id="tenseStatus">Mood: Counterfactual Subjunctive</span>
+        </div>
+        <div class="airmail-sheet" id="airmailSheet">
+          "If I had told you the diagnosis in October, before the first frost..."<br>
+          "Had I not mocked your Brahms over tea..."<br>
+          "Would that we might still walk along the Heath..."
+        </div>
+        <button class="action-btn" id="tearAirmailBtn">Tear the Conditional Sheets (Rrrr-ip → Present Indicative)</button>
+      </div>
+
+      <p class="paragraph">
+        I can no longer <span class="verb">assemble</span> the machinery of my own <span class="noun" data-word="remorse" data-generic="pain" data-etym="Med. Lat. remorsus, a biting back">remorse</span>. Regret <span class="verb">demands</span> a <span class="adj">parallel</span> world, a <span class="adj">grammatical</span> mood in which the latch did not <span class="verb">click</span> shut. <span class="verb">Lose</span> the subjunctive, and you <span class="verb">lose</span> the <span class="noun" data-word="syntax" data-generic="order" data-etym="Gr. syntaxis, arrangement">syntax</span> required to <span class="verb">haunt</span> yourself.
+      </p>
+      <p class="paragraph">
+        I <span class="verb">gather</span> the <span class="adj">blue</span> sheets together, <span class="verb">grip</span> the top margin in both fists, and <span class="verb">rip</span> them down the spine. Then across. <em>Rrrr-ip.</em> <span class="adj">Blue</span> flakes <span class="verb">snow</span> into the <span class="adj">wicker</span> basket. I am <span class="verb">walled</span> inside the present indicative, and the room is <span class="adj">extraordinarily quiet</span>.
+      </p>
+      <div class="jp-sub">
+        一番下の引き出しから、私はエレーナへの未投函の下書きで埋まった青いエアメール便箋を取り出す。どのページも条件節から始まっている——もし十月に診断のことを君に話していれば……。もし君のブラームスを嘲笑ったりしなければ……。願わくば私たちが……。<br>
+        私にはもはや、自分自身の悔恨の歯車を組み立てることができない。後悔には平行世界が必要だ。玄関の錠前が落ちなかったもうひとつの文法上の「法」が。仮定法を失うとき、人は自分自身を祟るために必要な統語論を失う。<br>
+        私は青い便箋を束ね、上端の余白を両拳で掴み、縦に真っ二つに引き裂いた。それから横にも。ビリビリッ。青い紙片が柳細工の屑籠へ雪のように舞い落ちる。私は「直説法現在」の壁の内側に閉じ込められ、そして部屋は驚くほど静かだ。
+      </div>
+    </article>
+
+    <!-- ================================================================= -->
+    <!-- ACT III: THE BARE VERBS & THE VOID                                -->
+    <!-- ================================================================= -->
+    <div class="act-banner" id="act3">
+      <span class="act-label">Act III · Wapping, April</span>
+      <h2 class="act-name">The Bare Verbs &amp; The Void</h2>
+      <p class="act-desc">Phase 3 Liberation: Nouns and syntax dissolve; raw perception and verbs remain in the dawn light.</p>
+    </div>
+
+    <h3 class="chapter-head">Chapter 5　The Hand on the Glass</h3>
+    <div class="episode-head">Episode 09: Touch, Cold, Hold</div>
+
+    <!-- S017 -->
+    <article class="scene-block" id="s017">
+      <span class="scene-id">[M3-C5-E09-S017]</span>
+      <p class="paragraph">
+        Spring.<br>
+        No month. No label.<br>
+        <span class="verb-pulse">Stand</span> before the tall clear wall.<br>
+        <span class="verb-pulse">Lift</span> the hand. <span class="verb-pulse">Press</span> the flat of the skin against the hard cold.<br>
+        Cold <span class="verb-pulse">bites</span> the palm. Breath <span class="verb-pulse">goes</span> out of the mouth and <span class="verb-pulse">blooms</span> white on the clear wall.<br>
+        <span class="verb-pulse">Drag</span> a finger through the white mist. <span class="verb-pulse">Open</span> a clear streak. Through the streak, the wet bright outside <span class="verb-pulse">shines</span>.<br>
+        <span class="verb-pulse">Rub</span> thumb against finger. <em>Shhh-shhh.</em><br>
+        <span class="verb-pulse">Press</span>. <span class="verb-pulse">Stay</span>. <span class="verb-pulse">Breathe</span>.
+      </p>
+
+      <!-- Interactive Frosted Window Canvas -->
+      <div class="interactive-widget">
+        <div class="widget-title">
+          <span>Interactive Surface: Breath on the Tall Clear Wall</span>
+          <span>Drag cursor / finger across the mist to clear the glass</span>
+        </div>
+        <div class="glass-canvas-wrap">
+          <div class="glass-under-text">PRESS · STAY · BREATHE</div>
+          <canvas id="frost-canvas"></canvas>
+        </div>
+      </div>
+
+      <div class="jp-sub">
+        春。<br>
+        月はない。名札もない。<br>
+        背の高い透明な壁の前に立つ。<br>
+        手を持ち上げる。皮膚の平らな面を、硬い冷たさに押し当てる。<br>
+        冷たさが掌を噛む。息が口から出て、透明な壁の上に白く咲く。<br>
+        白い霧の中に指を滑らせる。透明な筋がひとつ開く。その筋の向こうで、濡れた明るい外が光っている。<br>
+        親指と指を擦り合わせる。シュッ、シュッ。<br>
+        押す。留まる。息をする。
+      </div>
+    </article>
+
+    <!-- S018 -->
+    <article class="scene-block" id="s018">
+      <span class="scene-id">[M3-C5-E09-S018]</span>
+      <p class="paragraph">
+        The door <span class="verb-pulse">opens</span>. Steps on the wood.<br>
+        She <span class="verb-pulse">comes</span> in. Dark hair. Small hands. <span class="verb-pulse">Smells</span> of rain and bitter leaf-steam.<br>
+        No word for her. Only Her. Only Warm.<br>
+        She <span class="verb-pulse">stands</span> close. She <span class="verb-pulse">looks</span> at my chest. The wool coat on my shoulders <span class="verb-pulse">hangs</span> crooked—low button <span class="verb-pulse">pushed</span> into the high slit.<br>
+        Her fingers <span class="verb-pulse">rise</span>. She <span class="verb-pulse">slips</span> the round bone disc out, <span class="verb-pulse">guides</span> it through the right hole, <span class="verb-pulse">smooths</span> the rough wool over my collarbone.<br>
+        Her palm <span class="verb-pulse">rests</span> on my shoulder. Heartbeat in her wrist.<br>
+        <span class="verb-pulse">Warm</span>. <span class="verb-pulse">Hold</span>. <span class="verb-pulse">Safe</span>.
+      </p>
+      <div class="jp-sub">
+        扉が開く。木の上の足音。<br>
+        彼女が入ってくる。黒い髪。小さな手。雨と苦い葉の湯気の匂い。<br>
+        彼女を呼ぶ語はない。ただ、彼女。ただ、温かい。<br>
+        彼女が近くに立つ。私の胸を見る。肩にかかった毛の羽織が歪んでいる——下のボタンが上の穴に押し込まれている。<br>
+        彼女の指が上がる。丸い骨の円盤を抜き出し、正しい穴へと導き、鎖骨の上の粗い毛布を平らに撫でつける。<br>
+        彼女の掌が私の肩に留まる。その手首にある鼓動。<br>
+        温かい。保つ。安心。
+      </div>
+    </article>
+
+    <div class="episode-head">Episode 10: The Code That Breaks</div>
+
+    <!-- S019 -->
+    <article class="scene-block" id="s019">
+      <span class="scene-id">[M3-C5-E10-S019]</span>
+      <p class="paragraph">
+        <span class="verb-pulse">Sit</span> side by side.<br>
+        The flat light-box <span class="verb-pulse">rests</span> open on her knees.<br>
+        Inside the dark square, pale marks <span class="verb-pulse">drift</span> like ash in water.<br>
+        She <span class="verb-pulse">touches</span> the smooth pad. One mark <span class="verb-pulse">goes</span> dark. Another mark <span class="verb-pulse">blurs</span> into smoke.<br>
+        In the corner of the glass, small figures <span class="verb-pulse">tick</span> down: <em>3%... 2%... 1%...</em><br>
+        All the heavy stones I <span class="verb-pulse">carried</span> inside my skull—they <span class="verb-pulse">live</span> in her box now. <span class="verb-pulse">Drifting</span>. <span class="verb-pulse">Sinking</span>. <span class="verb-pulse">Turning</span> into still water.<br>
+        She <span class="verb-pulse">turns</span> her face to me. Wetness <span class="verb-pulse">shines</span> along her lower lashes.<br>
+        I <span class="verb-pulse">tap</span> the rim of the light-box with my knuckle and <span class="verb-pulse">nod</span> once. <span class="verb-pulse">Let</span> them <span class="verb-pulse">go</span>.
+      </p>
+      <div class="jp-sub">
+        並んで座る。<br>
+        平らな光の箱が、彼女の膝の上で開いている。<br>
+        暗い四角の中で、淡い印が水の中の灰のように漂っている。<br>
+        彼女が滑らかな板に触れる。ひとつの印が暗くなる。もうひとつの印が煙にぼやける。<br>
+        ガラスの隅で、小さな数字が落ちていく——3%……2%……1%……<br>
+        私が頭蓋の内側で運んでいた重い石ころのすべて——それらはいま、彼女の箱の中に住んでいる。漂い、沈み、静かな水へと変わっていく。<br>
+        彼女が私に顔を向ける。下まつげに沿って濡れた光が宿っている。<br>
+        私は光の箱の縁を指の関節で軽く叩き、一度だけ頷く。行かせよう。
+      </div>
+    </article>
+
+    <!-- S020 -->
+    <article class="scene-block" id="s020">
+      <span class="scene-id">[M3-C5-E10-S020]</span>
+      <p class="paragraph">
+        <span class="verb-pulse">Reach</span> into the deep pocket of the wool coat.<br>
+        Fingers <span class="verb-pulse">find</span> the short stick of wood. Tooth-marks <span class="verb-pulse">dented</span> all along the paint. <span class="verb-pulse">Smells</span> of forest resin and black stone.<br>
+        <span class="verb-pulse">Draw</span> it out. Nothing left to <span class="verb-pulse">name</span>.<br>
+        <span class="verb-pulse">Take</span> her small hand. <span class="verb-pulse">Turn</span> the palm up.<br>
+        <span class="verb-pulse">Lay</span> the bitten wood across the lines of her skin. <span class="verb-pulse">Fold</span> her fingers over it.<br>
+        <span class="verb-pulse">Keep</span>.
+      </p>
+      <div class="jp-sub">
+        毛の羽織の深い袋に手を入れる。<br>
+        指が短い木の棒を見つける。塗装の全体に歯型が窪んでいる。森の脂と黒い石の匂い。<br>
+        引き出す。名付けるものはもう残っていない。<br>
+        彼女の小さな手を取る。掌を上に向ける。<br>
+        噛み跡のある木を、彼女の皮膚の線の上に置く。その上に彼女の指を折りたたむ。<br>
+        持っていろ。
+      </div>
+    </article>
+
+    <h3 class="chapter-head">Chapter 6　The Light Itself</h3>
+    <div class="episode-head">Episode 11: The Last Hundred Letters</div>
+
+    <!-- S021 -->
+    <article class="scene-block" id="s021">
+      <span class="scene-id">[M3-C6-E11-S021]</span>
+      <p class="paragraph">
+        <span class="verb-pulse">Turn</span> toward the tall clear wall.<br>
+        The grey outside <span class="verb-pulse">splits</span> wide.<br>
+        Yellow <span class="verb-pulse">pours</span> through.<br>
+        It <span class="verb-pulse">spills</span> across the rough red wall. It <span class="verb-pulse">floods</span> the wood floor. It <span class="verb-pulse">climbs</span> my knees, my ribs, my throat.<br>
+        Once, a coin <span class="verb-pulse">sat</span> over my eye. <em>Sun. Afternoon. April. Gold.</em><br>
+        The coin has <span class="verb-pulse">fallen</span> away.<br>
+        Raw yellow heat <span class="verb-pulse">strikes</span> the naked eye with nothing between. Every speck of dust <span class="verb-pulse">turning</span> in the air <span class="verb-pulse">blazes</span> like a world. The rough wall <span class="verb-pulse">burns</span> gold.<br>
+        <span class="verb-pulse">Shut</span> the lids. Red-gold <span class="verb-pulse">glows</span> through the blood of the skin.<br>
+        <span class="verb-pulse">Open</span>.
+      </p>
+      <div class="jp-sub">
+        背の高い透明な壁の方へ向き直る。<br>
+        外の灰色が大きく裂ける。<br>
+        黄色が雪崩れ込んでくる。<br>
+        ざらついた赤い壁にこぼれ落ちる。木の床を浸す。私の膝を、肋骨を、喉を昇ってくる。<br>
+        かつて、私の目の上には硬貨が乗っていた。太陽。午後。四月。黄金。<br>
+        硬貨は剥がれ落ちた。<br>
+        生の黄色い熱が、間に何ひとつ挟まずに裸の目を撃つ。空中で回転する埃のひと粒ひと粒が、ひとつの世界のように燃え上がる。ざらついた壁が金色に炎上する。<br>
+        瞼を閉じる。皮膚の血を透かして赤金色が輝く。<br>
+        開く。
+      </div>
+    </article>
+
+    <!-- S022 -->
+    <article class="scene-block" id="s022">
+      <span class="scene-id">[M3-C6-E11-S022]</span>
+      <p class="paragraph" style="font-size: 2rem; line-height: 2.6; letter-spacing: 0.14em; text-align: center; margin: 6vh 0;">
+        <span class="verb-pulse">Look.</span><br>
+        <span class="verb-pulse">Taste.</span><br>
+        <span class="verb-pulse">Shine.</span><br>
+        <span class="verb-pulse">Breathe.</span><br>
+        <span class="verb-pulse">In.</span><br>
+        <span class="verb-pulse">Out.</span><br>
+        <span class="verb-pulse">Stay.</span><br>
+        <span class="verb-pulse">Be.</span>
+      </p>
+      <div class="jp-sub" style="text-align: center;">
+        見る。味わう。光る。息をする。吸う。吐く。留まる。在る。
+      </div>
+    </article>
+
+    <div class="episode-head">Episode 12: White Screen</div>
+
+    <!-- S023 -->
+    <article class="scene-block" id="s023">
+      <span class="scene-id">[M3-C6-E12-S023]</span>
+      <p class="paragraph" style="text-align: center; font-size: 1.8rem; letter-spacing: 0.5em; padding: 14vh 0; color: var(--text-muted);">
+        . . .<br>
+        . .<br>
+        .
+      </p>
+    </article>
+
+    <!-- S024: Epilogue Commit Log -->
+    <article class="scene-block" id="s024">
+      <span class="scene-id">[M3-C6-E12-S024]</span>
+      <div class="commit-log">
+        <div class="commit-meta">
+          ARCHIVAL COMMIT LOG — f8a92c4<br>
+          Author: Mayuki Rhys-Tanaka &lt;m.rhys-tanaka@shoreditch-typo.uk&gt;<br>
+          Date:   14 April 2027, 17:42:09 BST<br>
+          Status: Lexicon Depleted (0.0% Active Nouns / Verbs Dissolved)
+        </div>
+        <p style="margin-bottom: 1.2rem;">
+          /* Note for the British Library Web Archive:<br>
+          Julian stopped naming the world on a Tuesday.<br>
+          We sat by the window in Wapping while the tide went out,<br>
+          eating poached figs with a spoon because he no longer knew what a fork was for.<br>
+          When the dark syrup ran down his chin, he laughed—a clear, low sound,<br>
+          like the brass latch on an empty cello case. I had not heard him laugh<br>
+          since I was a child.
+        </p>
+        <p style="color: #c49e7e; font-size: 0.95rem;">
+          He stopped naming the world on a Tuesday.<br>
+          The world did not mind. */
+        </p>
+      </div>
+      <div class="jp-sub">
+        /* 大英図書館ウェブ・アーカイブへの注記：<br>
+        ジュリアンは火曜日に、世界に名前をつけるのをやめました。潮が引いていくあいだ、私たちはワッピングの窓辺に座り、白ワイン煮の無花果をスプーンで食べました。フォークが何のためのものか、もう彼には分からなかったからです。黒いシロップが顎を伝って垂れたとき、彼は笑いました——空っぽのチェロケースの真鍮の留め金を弾いたような、澄んだ低い音で。彼が笑うのを聞いたのは、私が子供だった頃以来でした。<br>
+        彼は火曜日に、世界に名前をつけるのをやめました。世界は、少しも気にしませんでした。 */
+      </div>
+    </article>
+
+  </main>
+
+  <script>
+    // =========================================================================
+    // 1. UI Controls: Drawer, Bilingual Toggle, Graveyard Modal
+    // =========================================================================
+    const drawerToggle = document.getElementById('drawerToggle');
+    const sceneDrawer = document.getElementById('sceneDrawer');
+    drawerToggle.addEventListener('click', () => {
+      sceneDrawer.classList.toggle('open');
+      drawerToggle.classList.toggle('active');
+    });
+
+    document.querySelectorAll('.drawer-link').forEach(link => {
+      link.addEventListener('click', () => {
+        sceneDrawer.classList.remove('open');
+        drawerToggle.classList.remove('active');
+      });
+    });
+
+    const jpToggle = document.getElementById('jpToggle');
+    jpToggle.addEventListener('click', () => {
+      document.body.classList.toggle('show-jp');
+      const isOn = document.body.classList.contains('show-jp');
+      jpToggle.textContent = isOn ? 'JP 対訳: ON' : 'JP 対訳: OFF';
+      jpToggle.classList.toggle('active', isOn);
+    });
+
+    const graveyardBtn = document.getElementById('graveyardBtn');
+    const graveyardModal = document.getElementById('graveyardModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const graveyardGrid = document.getElementById('graveyardGrid');
+
+    graveyardBtn.addEventListener('click', () => graveyardModal.classList.add('open'));
+    closeModalBtn.addEventListener('click', () => graveyardModal.classList.remove('open'));
+    graveyardModal.addEventListener('click', (e) => {
+      if (e.target === graveyardModal) graveyardModal.classList.remove('open');
+    });
+
+    // =========================================================================
+    // 2. Procedural Web Audio Engine (Zero External Dependencies)
+    // =========================================================================
+    let audioCtx = null;
+    let audioEnabled = false;
+    const audioToggle = document.getElementById('audioToggle');
+
+    function ensureAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    audioToggle.addEventListener('click', () => {
+      ensureAudio();
+      audioEnabled = !audioEnabled;
+      audioToggle.textContent = audioEnabled ? 'Audio: ON' : 'Audio: OFF';
+      audioToggle.classList.toggle('active', audioEnabled);
+      if (audioEnabled) {
+        playTone(392.0, 0.04, 1.4, 'sine');
+      }
+    });
+
+    function playTone(freq = 320, gainVal = 0.04, duration = 1.2, type = 'sine') {
+      if (!audioEnabled || !audioCtx) return;
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, now);
+      gain.gain.setValueAtTime(gainVal, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + duration);
+    }
+
+    // Cello Latch Clack + 98.0 Hz (G2) Cavity Hum (S006)
+    const celloLatchBtn = document.getElementById('celloLatchBtn');
+    celloLatchBtn.addEventListener('click', () => {
+      ensureAudio();
+      if (!audioEnabled) {
+        audioEnabled = true;
+        audioToggle.textContent = 'Audio: ON';
+        audioToggle.classList.add('active');
+      }
+      const now = audioCtx.currentTime;
+      // Brass transient click
+      const clickOsc = audioCtx.createOscillator();
+      const clickGain = audioCtx.createGain();
+      clickOsc.type = 'triangle';
+      clickOsc.frequency.setValueAtTime(1450, now);
+      clickOsc.frequency.exponentialRampToValueAtTime(180, now + 0.045);
+      clickGain.gain.setValueAtTime(0.18, now);
+      clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+      clickOsc.connect(clickGain);
+      clickGain.connect(audioCtx.destination);
+      clickOsc.start(now);
+      clickOsc.stop(now + 0.055);
+
+      // Deep G2 (98.0 Hz) + D3 (146.8 Hz) cavity resonance
+      [98.0, 146.83, 196.0].forEach((f, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(f, now + 0.03);
+        gain.gain.setValueAtTime(0.09 / (idx + 1), now + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.2);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + 0.03);
+        osc.stop(now + 3.25);
+      });
+    });
+
+    // =========================================================================
+    // 3. Two-Stage Semantic Dementia (svPPA) Noun Decay + Graveyard Tracking
+    // =========================================================================
+    const nouns = document.querySelectorAll('.noun');
+    const lostWords = new Map();
+
+    function updateVocabStats() {
+      let intact = 0;
+      nouns.forEach(n => {
+        if (!n.classList.contains('amputated')) intact++;
+      });
+      const pct = Math.round((intact / nouns.length) * 100);
+      document.getElementById('vocab-stat').textContent = `Intact Nouns: ${pct}%`;
+      graveyardBtn.textContent = `Lost Words (${lostWords.size})`;
+    }
+
+    function recordInGraveyard(word, etym) {
+      if (lostWords.has(word)) return;
+      lostWords.set(word, etym);
+      const item = document.createElement('div');
+      item.className = 'graveyard-item';
+      item.innerHTML = `<span class="graveyard-word">${word}</span><span class="graveyard-etym">${etym}</span>`;
+      graveyardGrid.appendChild(item);
+    }
+
+    nouns.forEach(noun => {
+      noun.addEventListener('click', () => {
+        const original = noun.getAttribute('data-word');
+        const generic = noun.getAttribute('data-generic') || 'thing';
+        const etym = noun.getAttribute('data-etym') || 'root lost';
+
+        if (!noun.classList.contains('stage-1') && !noun.classList.contains('amputated')) {
+          // Stage 1: Regress to generic hypernym
+          noun.classList.add('stage-1');
+          noun.textContent = generic;
+          playTone(310 + Math.random() * 60, 0.04, 0.7, 'sine');
+        } else if (noun.classList.contains('stage-1')) {
+          // Stage 2: Amputate into [____] slot
+          noun.classList.remove('stage-1');
+          noun.classList.add('amputated');
+          noun.textContent = original;
+          recordInGraveyard(original, etym);
+          playTone(155 + Math.random() * 35, 0.06, 1.3, 'triangle');
+          updateVocabStats();
+        }
+      });
+    });
+
+    // =========================================================================
+    // 4. Scene-Specific Interactive Widgets (Masking Tape, Airmail, Frosted Glass)
+    // =========================================================================
+    // S003: Masking Tape Strips
+    const tapeStrips = document.querySelectorAll('.tape-strip');
+    tapeStrips.forEach(strip => {
+      strip.addEventListener('click', () => {
+        strip.classList.toggle('peeled');
+        const anchored = document.querySelectorAll('.tape-strip:not(.peeled)').length;
+        document.getElementById('tapeStatus').textContent = `${anchored} / 6 Anchored`;
+        playTone(anchored * 65 + 140, 0.03, 0.4, 'sine');
+      });
+    });
+
+    // S016: Tearing the Blue Airmail Pad
+    const tearAirmailBtn = document.getElementById('tearAirmailBtn');
+    const airmailSheet = document.getElementById('airmailSheet');
+    tearAirmailBtn.addEventListener('click', () => {
+      airmailSheet.classList.toggle('torn');
+      const isTorn = airmailSheet.classList.contains('torn');
+      document.getElementById('tenseStatus').textContent = isTorn
+        ? 'Mood: Locked in Present Indicative'
+        : 'Mood: Counterfactual Subjunctive';
+      tearAirmailBtn.textContent = isTorn
+        ? 'Restore Conditional Drafts'
+        : 'Tear the Conditional Sheets (Rrrr-ip → Present Indicative)';
+      playTone(120, 0.07, 0.35, 'sawtooth');
+    });
+
+    // S017: Frosted Window Condensation Canvas
+    const frostCanvas = document.getElementById('frost-canvas');
+    const fCtx = frostCanvas.getContext('2d');
+
+    function initFrostCanvas() {
+      const rect = frostCanvas.parentElement.getBoundingClientRect();
+      frostCanvas.width = rect.width || 680;
+      frostCanvas.height = rect.height || 220;
+      fCtx.globalCompositeOperation = 'source-over';
+      fCtx.fillStyle = 'rgba(218, 226, 236, 0.92)';
+      fCtx.fillRect(0, 0, frostCanvas.width, frostCanvas.height);
+
+      fCtx.fillStyle = '#4b5566';
+      fCtx.font = '13px "JetBrains Mono", monospace';
+      fCtx.textAlign = 'center';
+      fCtx.fillText('[ Wipe condensation with cursor / finger ]', frostCanvas.width / 2, frostCanvas.height / 2);
+    }
+
+    initFrostCanvas();
+    window.addEventListener('resize', initFrostCanvas);
+
+    function wipeFrost(x, y) {
+      fCtx.globalCompositeOperation = 'destination-out';
+      const grad = fCtx.createRadialGradient(x, y, 4, x, y, 36);
+      grad.addColorStop(0, 'rgba(0,0,0,1)');
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+      fCtx.fillStyle = grad;
+      fCtx.beginPath();
+      fCtx.arc(x, y, 36, 0, Math.PI * 2);
+      fCtx.fill();
+    }
+
+    frostCanvas.addEventListener('mousemove', (e) => {
+      const r = frostCanvas.getBoundingClientRect();
+      wipeFrost(e.clientX - r.left, e.clientY - r.top);
+    });
+
+    frostCanvas.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      const r = frostCanvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      wipeFrost(touch.clientX - r.left, touch.clientY - r.top);
+    }, { passive: false });
+
+    // =========================================================================
+    // 5. Scroll Progression: Adjective Evaporation & Act III Dawn Inversion
+    // =========================================================================
+    const adjectives = document.querySelectorAll('.adj');
+    const act2El = document.getElementById('act2');
+    const act3El = document.getElementById('act3');
+    const s021El = document.getElementById('s021');
+
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      const pct = Math.min(1, Math.max(0, scrollTop / docHeight));
+
+      document.getElementById('scroll-stat').textContent = `Progression: ${(pct * 100).toFixed(0)}%`;
+
+      // Update Act label in HUD
+      const act2Top = act2El.offsetTop - 300;
+      const act3Top = act3El.offsetTop - 300;
+      const s021Top = s021El.offsetTop - 400;
+
+      if (scrollTop >= act3Top) {
+        document.getElementById('hud-act').textContent = 'Act III: The Bare Verbs';
+      } else if (scrollTop >= act2Top) {
+        document.getElementById('hud-act').textContent = 'Act II: Fracture of Nouns';
+      } else {
+        document.getElementById('hud-act').textContent = 'Act I: The Adjective Fog';
+      }
+
+      // Dawn Light Inversion from S021 onward
+      if (scrollTop >= s021Top) {
+        document.body.classList.add('dawn-mode');
+      } else {
+        document.body.classList.remove('dawn-mode');
+      }
+
+      // Evaporate adjectives that have scrolled above the lower third of viewport
+      adjectives.forEach(adj => {
+        const rect = adj.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.42 && pct > 0.06) {
+          adj.classList.add('evaporated');
+        } else if (pct <= 0.04) {
+          adj.classList.remove('evaporated');
+        }
+      });
+    });
+
+    // =========================================================================
+    // 6. Ambient Particle Canvas (Wapping Rain → Golden Dust Motes)
+    // =========================================================================
+    const ambCanvas = document.getElementById('ambient-canvas');
+    const aCtx = ambCanvas.getContext('2d');
+    let particles = [];
+
+    function resizeAmbient() {
+      ambCanvas.width = window.innerWidth;
+      ambCanvas.height = window.innerHeight;
+    }
+    resizeAmbient();
+    window.addEventListener('resize', resizeAmbient);
+
+    for (let i = 0; i < 48; i++) {
+      particles.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        vy: 0.4 + Math.random() * 0.9,
+        vx: (Math.random() - 0.5) * 0.25,
+        r: 1 + Math.random() * 1.8
+      });
+    }
+
+    function animateAmbient() {
+      aCtx.clearRect(0, 0, ambCanvas.width, ambCanvas.height);
+      const isDawn = document.body.classList.contains('dawn-mode');
+      aCtx.fillStyle = isDawn ? 'rgba(180, 130, 60, 0.35)' : 'rgba(160, 180, 210, 0.22)';
+
+      particles.forEach(p => {
+        p.y += isDawn ? -p.vy * 0.35 : p.vy;
+        p.x += p.vx;
+        if (p.y > ambCanvas.height) p.y = 0;
+        if (p.y < 0) p.y = ambCanvas.height;
+        if (p.x > ambCanvas.width) p.x = 0;
+        if (p.x < 0) p.x = ambCanvas.width;
+
+        aCtx.beginPath();
+        aCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        aCtx.fill();
+      });
+      requestAnimationFrame(animateAmbient);
+    }
+    animateAmbient();
+  </script>
+</body>
+</html>
